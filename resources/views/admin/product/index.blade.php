@@ -6,8 +6,7 @@
             <div class="row">
                 <div class="col-6 col-lg-3">
 
-                    <a class="block block-rounded block-link-shadow text-center" data-bs-toggle="modal"
-                        data-bs-target="#modal-block-large" href="#">
+                    <a class="block block-rounded block-link-shadow text-center" href="{{ url('product/create') }}">
                         <div class="block-content block-content-full">
                             <div class="fs-2 fw-semibold text-success">
                                 <i class="fa fa-plus"></i>
@@ -35,7 +34,7 @@
                 <div class="col-6 col-lg-3">
                     <a class="block block-rounded block-link-shadow text-center" href="be_pages_ecom_dashboard.html">
                         <div class="block-content block-content-full">
-                            <div class="fs-2 fw-semibold text-dark">260</div>
+                            <div class="fs-2 fw-semibold text-dark">{{ $newProduct }}</div>
                         </div>
                         <div class="block-content py-2 bg-body-light">
                             <p class="fw-medium fs-sm text-muted mb-0">
@@ -47,11 +46,11 @@
                 <div class="col-6 col-lg-3">
                     <a class="block block-rounded block-link-shadow text-center" href="be_pages_ecom_dashboard.html">
                         <div class="block-content block-content-full">
-                            <div class="fs-2 fw-semibold text-dark">14503</div>
+                            <div class="fs-2 fw-semibold text-dark">{{ $totalProduct }}</div>
                         </div>
                         <div class="block-content py-2 bg-body-light">
                             <p class="fw-medium fs-sm text-muted mb-0">
-                                All Categories
+                                All Product
                             </p>
                         </div>
                     </a>
@@ -59,7 +58,7 @@
             </div>
             <div class="block block-rounded">
                 <div class="block-header block-header-default">
-                    <h3 class="block-title">All Categories</h3>
+                    <h3 class="block-title">All Product</h3>
                     <div class="block-options">
                         <div class="dropdown">
                             <button type="button" class="btn-block-option" id="dropdown-ecom-filters"
@@ -94,7 +93,7 @@
                         <div class="mb-4">
                             <div class="input-group">
                                 <input type="text" class="form-control form-control-alt" id="one-ecom-products-search"
-                                    name="one-ecom-products-search" placeholder="Search all categories.">
+                                    name="one-ecom-products-search" placeholder="Search all Product.">
                                 <span class="input-group-text bg-body border-0">
                                     <i class="fa fa-search"></i>
                                 </span>
@@ -125,7 +124,11 @@
                             <thead>
                                 <tr>
                                     <th class="text-center" style="width: 100px;">No</th>
+                                    <th class="d-none d-md-table-cell">Category</th>
                                     <th class="d-none d-md-table-cell">Name</th>
+                                    <th class="d-none d-md-table-cell">Images</th>
+                                    <th class="d-none d-md-table-cell">Price</th>
+                                    <th class="d-none d-md-table-cell">Stock</th>
                                     <th class="text-center">Action</th>
 
                                 </tr>
@@ -139,13 +142,24 @@
                                             </a>
                                         </td>
                                         <td class="d-none d-md-table-cell fs-sm">
+                                            {{ $item->category->name }}
+                                        </td>
+                                        <td class="d-none d-md-table-cell fs-sm">
                                             {{ $item->name }}
+                                        </td>
+                                        <td class="d-none d-md-table-cell fs-sm">
+                                            <img src="{{ asset('storage/product/'.$item->img) }}" alt="" style="width: 30px">
+                                        </td>
+                                        <td class="d-none d-md-table-cell fs-sm">
+                                            {{ $item->price }}
+                                        </td>
+                                        <td class="d-none d-md-table-cell fs-sm">
+                                            {{ $item->stock }}
                                         </td>
 
                                         <td class="text-center fs-sm">
-                                            <a class="btn btn-sm btn-alt-info js-bs-tooltip-enabled" href=""
-                                                aria-label="Edit" data-bs-original-title="Edit" data-bs-toggle="modal"
-                                                data-bs-target="#inlineFormUpdate{{ $item->id }}">
+                                            <a class="btn btn-sm btn-alt-info js-bs-tooltip-enabled" href="{{ url('product/'.$item->id.'/edit') }}"
+                                                aria-label="Edit" data-bs-original-title="Edit" data-bs-toggle="Tooltip">
                                                 <i class="fa fa-fw fa-pencil"></i>
                                             </a>
                                             <a class="btn btn-sm btn-alt-secondary js-bs-tooltip-enabled" href=""
@@ -162,53 +176,6 @@
 
                                     </tr>
 
-                                    {{-- modal update --}}
-                                    <div class="modal" id="inlineFormUpdate{{ $item->id }}" tabindex="-1" aria-labelledby="modal-block-large"
-                                        aria-hidden="true" style="display: none;">
-                                        <div class="modal-dialog modal-lg" role="document">
-                                            <div class="modal-content">
-                                                <div class="block block-rounded block-transparent mb-0">
-                                                    <div class="block-header block-header-default">
-                                                        <h3 class="block-title">Update Data</h3>
-                                                        <div class="block-options">
-                                                            <button type="button" class="btn-block-option" data-bs-dismiss="modal"
-                                                                aria-label="Close">
-                                                                <i class="fa fa-fw fa-times"></i>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                    <div class="block-content fs-sm">
-                                                        <div class="row push">
-                                                            <form action="{{ url('category/'.$item->id) }}" method="POST">
-                                                                @method('PUT')
-                                                                @csrf
-                                                                <div class="col-lg-12 col-xl-12">
-                                                                    <div class="mb-4">
-                                                                        <label class="form-label" for="example-text-input">Category</label>
-                                                                        <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                                                            id="name" name="name" placeholder="Please input category"
-                                                                            value="{{ old('name', $item->name) }}">
-                                                                    </div>
-                                                                    @error('name')
-                                                                        <div class="invalid-feedback">
-                                                                            {{ $message }}
-                                                                        </div>
-                                                                    @enderror
-                                                                    <div class="block-content block-content-full text-end bg-body">
-                                                                        <button type="submit" class="btn btn-sm btn-primary"
-                                                                            data-bs-dismiss="modal">Update</button>
-                                                                    </div>
-                                                                </div>
-
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {{-- modal delete --}}
                                     <div class="modal" id="inlineFormDelete{{ $item->id }}" tabindex="-1" aria-labelledby="modal-block-large"
                                         aria-hidden="true" style="display: none;">
                                         <div class="modal-dialog modal-lg" role="document">
@@ -225,11 +192,11 @@
                                                     </div>
                                                     <div class="block-content fs-sm">
                                                         <div class="row push">
-                                                            <form action="{{ url('category/'.$item->id) }}" method="POST">
+                                                            <form action="{{ url('product/'.$item->id) }}" method="POST">
                                                                 @method('delete')
                                                                 @csrf
                                                                 <div class="block-content fs-sm">
-                                                                    <p>Are u sure, category {{ $item->name }} Delete?</p>
+                                                                    <p>Are u sure, product {{ $item->name }} Delete?</p>
                                                        
                                                                   </div>
                                                                   <div class="block-content block-content-full text-end bg-body">
@@ -278,48 +245,6 @@
             </div>
         </div>
 
-        <div class="modal" id="modal-block-large" tabindex="-1" aria-labelledby="modal-block-large"
-            aria-hidden="true" style="display: none;">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="block block-rounded block-transparent mb-0">
-                        <div class="block-header block-header-default">
-                            <h3 class="block-title">Modal Title</h3>
-                            <div class="block-options">
-                                <button type="button" class="btn-block-option" data-bs-dismiss="modal"
-                                    aria-label="Close">
-                                    <i class="fa fa-fw fa-times"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="block-content fs-sm">
-                            <div class="row push">
-                                <form action="{{ url('/category') }}" method="POST">
-                                    @csrf
-                                    <div class="col-lg-12 col-xl-12">
-                                        <div class="mb-4">
-                                            <label class="form-label" for="example-text-input">Category</label>
-                                            <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                                id="name" name="name" placeholder="Please input category"
-                                                value="{{ old('name') }}">
-                                        </div>
-                                        @error('name')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
-                                        <div class="block-content block-content-full text-end bg-body">
-                                            <button type="submit" class="btn btn-sm btn-primary"
-                                                data-bs-dismiss="modal">Submit</button>
-                                        </div>
-                                    </div>
-
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
     </main>
 @endsection

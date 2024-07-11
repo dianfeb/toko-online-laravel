@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
 
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>OneUI - Bootstrap 5 Admin Template &amp; UI Framework | DEMO</title>
+    <title>@yield('title', 'Dashboard Admin')</title>
     <meta name="description"
         content="OneUI - Bootstrap 5 Admin Template &amp; UI Framework created by pixelcave | This is the demo of OneUI! You need to purchase a license for legal use! | DEMO" />
     <meta name="author" content="pixelcave" />
@@ -74,12 +74,12 @@
                                     <ul class="nav-main-submenu">
                                         <li class="nav-main-item">
                                             <a class="nav-main-link active" href="/category">
-                                                <span class="nav-main-link-name">Kategori</span>
+                                                <span class="nav-main-link-name">Category</span>
                                             </a>
                                         </li>
                                         <li class="nav-main-item">
-                                            <a class="nav-main-link" href="be_pages_ecom_orders.html">
-                                                <span class="nav-main-link-name">Produk</span>
+                                            <a class="nav-main-link" href="/product">
+                                                <span class="nav-main-link-name">Product</span>
                                             </a>
                                         </li>
                                         <li class="nav-main-item">
