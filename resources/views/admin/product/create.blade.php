@@ -32,7 +32,7 @@
                     <h3 class="block-title">Add Data</h3>
                 </div>
                 <div class="block-content block-content-full">
-                    <form action="{{ url('product') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ url('admin/product') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="row push">
                             <div class="col-lg-6 col-xl-6">

@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="col-6 col-lg-3">
 
-                    <a class="block block-rounded block-link-shadow text-center" href="{{ url('product/create') }}">
+                    <a class="block block-rounded block-link-shadow text-center" href="{{ url('admin/product/create') }}">
                         <div class="block-content block-content-full">
                             <div class="fs-2 fw-semibold text-success">
                                 <i class="fa fa-plus"></i>
@@ -158,7 +158,7 @@
                                         </td>
 
                                         <td class="text-center fs-sm">
-                                            <a class="btn btn-sm btn-alt-info js-bs-tooltip-enabled" href="{{ url('product/'.$item->id.'/edit') }}"
+                                            <a class="btn btn-sm btn-alt-info js-bs-tooltip-enabled" href="{{ url('admin/product/'.$item->id.'/edit') }}"
                                                 aria-label="Edit" data-bs-original-title="Edit" data-bs-toggle="Tooltip">
                                                 <i class="fa fa-fw fa-pencil"></i>
                                             </a>
@@ -192,7 +192,7 @@
                                                     </div>
                                                     <div class="block-content fs-sm">
                                                         <div class="row push">
-                                                            <form action="{{ url('product/'.$item->id) }}" method="POST">
+                                                            <form action="{{ url('admin/product/'.$item->id) }}" method="POST">
                                                                 @method('delete')
                                                                 @csrf
                                                                 <div class="block-content fs-sm">

@@ -179,7 +179,7 @@
                                                     </div>
                                                     <div class="block-content fs-sm">
                                                         <div class="row push">
-                                                            <form action="{{ url('category/'.$item->id) }}" method="POST">
+                                                            <form action="{{ url('admin/category/'.$item->id) }}" method="POST">
                                                                 @method('PUT')
                                                                 @csrf
                                                                 <div class="col-lg-12 col-xl-12">
@@ -225,7 +225,7 @@
                                                     </div>
                                                     <div class="block-content fs-sm">
                                                         <div class="row push">
-                                                            <form action="{{ url('category/'.$item->id) }}" method="POST">
+                                                            <form action="{{ url('admin/category/'.$item->id) }}" method="POST">
                                                                 @method('delete')
                                                                 @csrf
                                                                 <div class="block-content fs-sm">
@@ -294,7 +294,7 @@
                         </div>
                         <div class="block-content fs-sm">
                             <div class="row push">
-                                <form action="{{ url('/category') }}" method="POST">
+                                <form action="{{ url('/admin/category') }}" method="POST">
                                     @csrf
                                     <div class="col-lg-12 col-xl-12">
                                         <div class="mb-4">

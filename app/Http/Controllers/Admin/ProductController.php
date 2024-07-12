@@ -57,7 +57,7 @@ class ProductController extends Controller
 
         Product::create($data);
 
-        return redirect(url('product'))->with('success', 'Data Has Been Created');
+        return redirect(url('admin/product'))->with('success', 'Data Has Been Created');
     }
 
     /**
@@ -111,7 +111,7 @@ class ProductController extends Controller
 
         Product::find($id)->update($data);
 
-        return redirect(url('product'))->with('success', 'Data Has Been Update');
+        return redirect(url('admin/product'))->with('success', 'Data Has Been Update');
     }
 
     /**

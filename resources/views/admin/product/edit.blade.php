@@ -32,7 +32,7 @@
                     <h3 class="block-title">Add Data</h3>
                 </div>
                 <div class="block-content block-content-full">
-                    <form action="{{ url('product/' . $data->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ url('/admin/product/' . $data->id) }}" method="POST" enctype="multipart/form-data">
                         @method('PUT')
                         @csrf
                         <input type="hidden" name="oldImg" value="{{$data->img}}">
@@ -73,7 +73,7 @@
                             <div class="col-4">
                                 <div class="mb-4">
                                     
-                                    <img src="{{asset('storage/product/'.$data->img)}}" alt="" width="30px"><br>
+                                    <img src="{{asset('storage/admin/product/'.$data->img)}}" alt="" width="30px"><br>
                                             <small>Gambar Lama </small><br>
                                     <input class="form-control" type="file" id="example-file-input" name="img">
                                 </div>

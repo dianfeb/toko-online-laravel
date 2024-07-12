@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="assets/media/favicons/favicon.png" />
     <link rel="icon" type="image/png" sizes="192x192" href="assets/media/favicons/favicon-192x192.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="assets/media/favicons/apple-touch-icon-180x180.png" />
-    <link rel="stylesheet" id="css-main" href="{{ asset('admin/assets/css/oneui.min-5.9.css') }}" />
+    <link rel="stylesheet" id="css-main" href="{{ asset('admins/assets/css/oneui.min-5.9.css') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
@@ -55,7 +55,7 @@
                 <div class="content-side">
                     <ul class="nav-main">
                         <li class="nav-main-item">
-                            <a class="nav-main-link" href="/dashboard">
+                            <a class="nav-main-link" href="/admin/dashboard">
                                 <i class="nav-main-link-icon fa fa-tachometer"></i>
                                 <span class="nav-main-link-name">Dashboard</span>
                             </a>
@@ -73,12 +73,12 @@
                                    
                                     <ul class="nav-main-submenu">
                                         <li class="nav-main-item">
-                                            <a class="nav-main-link active" href="/category">
+                                            <a class="nav-main-link active" href="/admin/category">
                                                 <span class="nav-main-link-name">Category</span>
                                             </a>
                                         </li>
                                         <li class="nav-main-item">
-                                            <a class="nav-main-link" href="/product">
+                                            <a class="nav-main-link" href="/admin/product">
                                                 <span class="nav-main-link-name">Product</span>
                                             </a>
                                         </li>
@@ -138,7 +138,7 @@
                         <button type="button" class="btn btn-sm btn-alt-secondary d-flex align-items-center"
                             id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
                             aria-expanded="false">
-                            <img class="rounded-circle" src="{{ asset('admin/assets/images/avatar11.jpg') }}" alt="Header Avatar"
+                            <img class="rounded-circle" src="{{ asset('admins/assets/images/avatar11.jpg') }}" alt="Header Avatar"
                                 style="width: 21px" />
                             <span class="d-none d-sm-inline-block ms-2">admin</span>
                             <i class="fa fa-fw fa-angle-down d-none d-sm-inline-block opacity-50 ms-1 mt-1"></i>
@@ -147,24 +147,28 @@
                             aria-labelledby="page-header-user-dropdown">
                             <div class="p-3 text-center bg-body-light border-bottom rounded-top">
                                 <img class="img-avatar img-avatar48 img-avatar-thumb"
-                                    src="{{ asset('admin/assets/images/avatar11.jpg') }}" alt="" />
-                                <p class="mt-2 mb-0 fw-medium">Dian Febrianto</p>
+                                    src="{{ asset('admins/assets/images/avatar11.jpg') }}" alt="" />
+                                <p class="mt-2 mb-0 fw-medium">{{ Auth::guard('admin')->user()->name }}</p>
                                 <p class="mb-0 text-muted fs-sm fw-medium">Admin Toko Online</p>
                             </div>
                             <div class="p-2">
                                
                                 <a class="dropdown-item d-flex align-items-center justify-content-between"
-                                    href="javascript:void(0)">
+                                    href="{{ route('admin.profile.edit') }}">
                                     <span class="fs-sm fw-medium">Settings</span>
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center justify-content-between"
                                 href="op_auth_lock.html">
                                 <span class="fs-sm fw-medium">Lock Account</span>
                             </a>
-                            <a class="dropdown-item d-flex align-items-center justify-content-between"
-                                href="op_auth_signin.html">
-                                <span class="fs-sm fw-medium">Log Out</span>
-                            </a>
+                            
+                           
+                            <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
+                            <a class="dropdown-item d-flex align-items-center justify-content-between" href="{{ route('admin.logout') }}"
+                                onclick="event.preventDefault();
+                            document.getElementById('logout-form').submit();">  <span class="fs-sm fw-medium">Log Out</span> </a>
                             </div>
                            
                         </div>
@@ -213,9 +217,9 @@
             </div>
         </footer>
     </div>
-    <script src="{{ asset('admin/assets/js/oneui.app.min-5.9.js') }}"></script>
-    <script src="{{ asset('admin/assets/js/chart.umd.js') }}"></script>
-    <script src="{{ asset('admin/assets/js/be_pages_ecom_dashboard.min.js') }}"></script>
+    <script src="{{ asset('admins/assets/js/oneui.app.min-5.9.js') }}"></script>
+    <script src="{{ asset('admins/assets/js/chart.umd.js') }}"></script>
+    <script src="{{ asset('admins/assets/js/be_pages_ecom_dashboard.min.js') }}"></script>
 
 </body>
 
