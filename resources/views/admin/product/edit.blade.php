@@ -7,7 +7,7 @@
                 <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center py-2">
                     <div class="flex-grow-1">
                         <h1 class="h3 fw-bold mb-1">
-                            Form create data
+                            Form Edit data
                         </h1>
                         <h2 class="fs-base lh-base fw-medium text-muted mb-0">
                             Carefully designed elements that will ensure a great experience for your users.
@@ -19,7 +19,7 @@
                                 <a class="link-fx" href="javascript:void(0)">Forms</a>
                             </li>
                             <li class="breadcrumb-item" aria-current="page">
-                                create data
+                                Edit data
                             </li>
                         </ol>
                     </nav>

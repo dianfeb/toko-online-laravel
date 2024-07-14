@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Admin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,28 +28,43 @@ class AdminController extends Controller
     }
 
     public function edit() {
-        $admin = Auth::guard('admin')->user();
-        return view('admin.profile.edit', compact('admin'));
+        $data = Auth::guard('admin')->user();
+        return view('admin.auth.editProfil', compact('data'));
         
     }
 
-    public function update(request $request, string $id) {
-        $admin = Auth::guard('admin')->user();
+    public function update(request $request) {
+       // Dapatkan admin yang sedang login
+       $admin = Auth::guard('admin')->user();
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:admins,email,' . $admin->id,
-            'password' => 'nullable|string|min:8|confirmed',
-        ]);
+       // Log ID admin untuk debugging
+       Log::info('Updating profile for admin ID: ' . $admin->id);
 
-        $admin->name = $request->name;
-        $admin->email = $request->email;
-        if ($request->filled('password')) {
-            $admin->password = bcrypt($request->password);
-        }
-        Admin::find($id)->update($admin);
+       // Validasi data yang diminta
+       $request->validate([
+           'name' => 'required|string|max:255',
+           'email' => 'required|string|email|max:255|unique:admins,email,' . $admin->id,
+           'password' => 'nullable|string|min:8|confirmed',
+           'password_confirmation' => 'nullable|min:8|required_with:password'
+       ]);
 
-        return redirect()->route('admin.profile.edit')->with('status', 'Profile updated successfully.');
+       // Siapkan data untuk diperbarui
+       $adminData = [
+           'name' => $request->name,
+           'email' => $request->email,
+       ];
+       
+       if ($request->filled('password')) {
+           $adminData['password'] = bcrypt($request->password);
+       }
 
-    }
+       // Perbarui data admin menggunakan metode find dan update
+       Admin::find($admin->id)->update($adminData);
+
+       // Log update untuk debugging
+       Log::info('Admin profile updated for user ID: ' . $admin->id);
+
+       // Redirect ke rute yang diinginkan dengan pesan sukses
+       return redirect()->route('admin.profile.edit')->with('success', 'Profile updated successfully.');
+   }
 }

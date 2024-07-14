@@ -66,7 +66,7 @@
                                     class="add-to-compare d-flex align-items-center justify-content-center text-primary bg-white hover-white bg-hover-primary w-45px h-45px rounded-circle mb-2 border">
                                     <i class="fa fa-random"></i>
                                 </a>
-                                <a href="#" data-toggle="tooltip" data-placement="left"
+                                <a href="{{ url('detail/'.$item->slug) }}" data-toggle="tooltip" data-placement="left"
                                     title="Preview"
                                     class="preview d-flex align-items-center justify-content-center text-primary bg-white hover-white bg-hover-primary w-45px h-45px rounded-circle mb-2 border">
                                     <i class="fa fa-eye"></i>
@@ -262,4 +262,5 @@
 
 
 @endsection
+
        

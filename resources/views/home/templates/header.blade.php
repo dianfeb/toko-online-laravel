@@ -8,6 +8,7 @@
     <meta name="author" content>
     <meta name="generator" content="Jekyll">
     <title>Home 03 - Furnitor</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
@@ -21,6 +22,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/mapbox-gl.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/themes.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        @stack('css')
     <link rel="icon" href="images/favicon.ico">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:site" content="@">
@@ -40,19 +42,19 @@
 </head>
 
 <body>
-    <header class="main-header navbar-light header-sticky header-sticky-smart position-absolute fixed-top">
+    <header class="main-header navbar-light header-sticky header-sticky-smart {{ request()->routeIs('home.index') ? 'position-absolute fixed-top' : '' }}">
         <div class="sticky-area">
             <div class="container container-xxl">
                 <div class="d-none d-xl-block">
                     <nav class="navbar navbar-expand-xl px-0 py-2 py-xl-0 row no-gutters">
-                        <div class="col-xl-3"><a class="navbar-brand mr-0" href="index.html">
-                                <img src="assets/images/logo.png" alt="Furnitor">
+                        <div class="col-xl-3"><a class="navbar-brand mr-0" href="/">
+                                <img src="/assets/images/logo.png" alt="Furnitor">
                             </a></div>
                         <div class="col-xl-6 d-flex justify-content-center position-static">
                             <ul class="navbar-nav hover-menu main-menu px-0 mx-xl-n4">
                                 <li aria-haspopup="true" aria-expanded="false"
                                     class="nav-item py-2 py-xl-5 px-0 px-xl-4">
-                                    <a class="nav-link p-0" href="index.html" >
+                                    <a class="nav-link p-0" href="/" >
                                         Home
                                         <span class="caret"></span>
                                     </a>
@@ -78,117 +80,8 @@
                                         
                                     </ul>
                                 </li>
-                                <li aria-haspopup="true" aria-expanded="false"
-                                    class="nav-item dropdown-item-blog dropdown py-2 py-xl-5 px-0 px-xl-4">
-                                    <a class="nav-link dropdown-toggle p-0" href="#" data-toggle="dropdown">
-                                        Blog
-                                        <span class="caret"></span>
-                                    </a>
-                                    <ul class="dropdown-menu pt-3 pb-0 pb-xl-3 x-animated x-fadeInUp">
-                                        <li class="dropdown-item dropdown dropright">
-                                            <a class="dropdown-link dropdown-toggle" href="#"
-                                                data-toggle="dropdown">
-                                                Blog Listing
-                                            </a>
-                                            <ul
-                                                class="dropdown-menu dropdown-submenu pt-3 pb-0 pb-xl-3 x-animated x-fadeInLeft">
-                                                <li class="dropdown-item">
-                                                    <a class="dropdown-link" href="blog-layout-01.html">Blog Layout
-                                                        01</a>
-                                                </li>
-                                                <li class="dropdown-item">
-                                                    <a class="dropdown-link" href="blog-layout-02.html">Blog Layout
-                                                        02</a>
-                                                </li>
-                                                <li class="dropdown-item">
-                                                    <a class="dropdown-link" href="blog-layout-03.html">Blog Layout
-                                                        03</a>
-                                                </li>
-                                                <li class="dropdown-item">
-                                                    <a class="dropdown-link" href="blog-layout-04.html">Blog Layout
-                                                        04</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="dropdown-item dropdown dropright">
-                                            <a class="dropdown-link dropdown-toggle" href="#"
-                                                data-toggle="dropdown">
-                                                Blog Post
-                                            </a>
-                                            <ul
-                                                class="dropdown-menu dropdown-submenu pt-3 pb-0 pb-xl-3 x-animated x-fadeInLeft">
-                                                <li class="dropdown-item">
-                                                    <a class="dropdown-link" href="blog-post-01.html">Blog Post 01</a>
-                                                </li>
-                                                <li class="dropdown-item">
-                                                    <a class="dropdown-link" href="blog-post-02.html">Blog Post 02</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li aria-haspopup="true" aria-expanded="false"
-                                    class="nav-item dropdown-item-docs dropdown py-2 py-xl-5 px-0 px-xl-4">
-                                    <a class="nav-link dropdown-toggle p-0" href="#" data-toggle="dropdown">
-                                        Docs
-                                        <span class="caret"></span>
-                                    </a>
-                                    <div class="dropdown-menu px-0 pt-3 dropdown-menu-docs x-animated x-fadeInUp">
-                                        <div class="dropdown-body">
-                                            <a class="dropdown-item py-1"
-                                                href="docs/getting-started/dev-environment-setup.html">
-                                                <div class="media">
-                                                    <div class="fs-20 mr-3">
-                                                        <i class="fal fa-file-alt"></i>
-                                                    </div>
-                                                    <div class="media-body">
-                                                        <span class="d-block lh-15">Documentation</span>
-                                                        <small class="d-block">Kick-start customization</small>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                            <div class="dropdown-divider m-0"></div>
-                                            <a class="dropdown-item py-1" href="docs/content/typography.html">
-                                                <div class="media">
-                                                    <div class="fs-20 mr-3">
-                                                        <i class="fal fa-layer-group"></i>
-                                                    </div>
-                                                    <div class="media-body">
-                                                        <span class="d-block lh-15">UI Kit<span
-                                                                class="badge badge-danger ml-2">50+</span></span>
-                                                        <small class="d-block">Flexible components</small>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                            <div class="dropdown-divider m-0"></div>
-                                            <a class="dropdown-item py-1" href="docs/getting-started/changelog.html">
-                                                <div class="media">
-                                                    <div class="fs-20 mr-3">
-                                                        <i class="fal fa-edit"></i>
-                                                    </div>
-                                                    <div class="media-body">
-                                                        <span class="d-block lh-15">Changelog<span
-                                                                class="badge badge-success ml-2">v1.1.0</span></span>
-                                                        <small class="d-block">Regular updates</small>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                            <div class="dropdown-divider m-0"></div>
-                                            <a class="dropdown-item py-1" href="https://sp.g5plus.net/"
-                                                target="_blank">
-                                                <div class="media">
-                                                    <div class="fs-20 mr-3">
-                                                        <i class="fal fa-life-ring"></i>
-                                                    </div>
-                                                    <div class="media-body">
-                                                        <span class="d-block lh-15">Support</span>
-                                                        <small class="d-block">https://sp.g5plus.net/</small>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </li>
+                               
+                                
                             </ul>
                         </div>
                         <div class="col-xl-3 position-relative">
@@ -199,24 +92,27 @@
                                         class="fa fa-search"></i></a>
                                 <ul
                                     class="navbar-nav flex-row justify-content-xl-end d-flex flex-wrap text-body py-0 navbar-right">
-                                    <li class="nav-item">
-                                        <a class="nav-link pr-3 py-0" href="#">
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link pr-3 py-0" href="/account">
                                             <i class="fa fa-user-alt"></i>
                                         </a>
                                     </li>
+                                    
+                                    
+                                    @if(auth()->check())
                                     <li class="nav-item">
-                                        <a class="nav-link position-relative px-3 py-0" href="#"><i
-                                                class="fa fa-heart"></i>
-                                            <span class="position-absolute number">0</span></a>
+                                        <a class="nav-link position-relative px-3 py-0" href="#">
+                                            <i class="fa fa-heart"></i>
+                                            <span class="position-absolute number">0</span>
+                                        </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link position-relative px-3 menu-cart py-0" href="#"
-                                            data-canvas="true"
-                                            data-canvas-options="{&quot;container&quot;:&quot;.cart-canvas&quot;}">
+                                        <a class="nav-link position-relative px-3 menu-cart py-0" href="#" data-canvas="true" data-canvas-options="{&quot;container&quot;:&quot;.cart-canvas&quot;}">
                                             <i class="fa fa-shopping-basket"></i>
                                             <span class="position-absolute number">0</span>
                                         </a>
                                     </li>
+                                @endif
                                 </ul>
                             </div>
                         </div>
@@ -343,7 +239,22 @@
     <script src="{{ asset('assets/js/mapbox-gl.js') }}"></script>
     <script src="{{ asset('assets/js/theme.js') }}"></script>
     <script src="{{ asset('assets/js/hc-sticky.min.js') }}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            function adjustNavbar() {
+                var navbar = document.getElementById('navbar');
+                if (navbar) {
+                    if (!{{ request()->routeIs('home.index') ? 'true' : 'false' }}) {
+                        navbar.classList.remove('position-absolute', 'fixed-top');
+                    }
+                }
+            }
+    
+            adjustNavbar();
+        });
+    </script>
 
+    @stack('js')
     <svg aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1"
         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <defs>
