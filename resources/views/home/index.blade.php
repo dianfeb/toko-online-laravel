@@ -1,5 +1,5 @@
 @extends('home.templates.header')
-
+@section('title', 'Toko Online Laravel | Home')
 @section('content')
 <section class="overflow-hidden">
     <div class="slick-slider custom-slider-02"
@@ -47,11 +47,15 @@
                                 class="text-uppercase text-muted letter-spacing-05 fs-13 font-weight-500">{{ $item->category->name }}</a>
                             <div class="mt-auto price-wrap">
                                 <p class="mt-auto text-primary mb-0 price font-weight-500">
-                                    {{ $item->price }}</p>
-                                <a href="#"
-                                    class="fs-14 font-weight-500 border-bottom border-light-dark border-hover-primary text-uppercase letter-spacing-05 add-to-cart d-inline-block">Add
-                                    to
-                                    card</a>
+                                    Rp. {{ $item->price }}</p>
+                                    {{-- route cart --}}
+                                    <form action="{{ route('cart.add', $item->id) }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button type="submit" class="fs-14 font-weight-500 border-bottom border-light-dark border-hover-primary text-uppercase letter-spacing-05 add-to-cart d-inline-block">
+                                            Add to cart
+                                        </button>
+                                    </form>
                             </div>
                         </div>
                         <div class="ml-auto d-flex flex-column">
@@ -61,11 +65,7 @@
                                     class="add-to-wishlist d-flex align-items-center justify-content-center text-primary bg-white hover-white bg-hover-primary w-45px h-45px rounded-circle mb-2 border">
                                     <i class="fa fa-heart"></i>
                                 </a>
-                                <a href="#" data-toggle="tooltip" data-placement="left"
-                                    title="Add to compare"
-                                    class="add-to-compare d-flex align-items-center justify-content-center text-primary bg-white hover-white bg-hover-primary w-45px h-45px rounded-circle mb-2 border">
-                                    <i class="fa fa-random"></i>
-                                </a>
+                                
                                 <a href="{{ url('detail/'.$item->slug) }}" data-toggle="tooltip" data-placement="left"
                                     title="Preview"
                                     class="preview d-flex align-items-center justify-content-center text-primary bg-white hover-white bg-hover-primary w-45px h-45px rounded-circle mb-2 border">
@@ -76,10 +76,7 @@
                     </div>
                 </div>
             </div>
-            @endforeach
-            
-            
-           
+            @endforeach      
         </div>
     </div>
 </section>

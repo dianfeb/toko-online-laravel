@@ -83,8 +83,8 @@
                                             </a>
                                         </li>
                                         <li class="nav-main-item">
-                                            <a class="nav-main-link" href="be_pages_ecom_order.html">
-                                                <span class="nav-main-link-name">Keranjgan</span>
+                                            <a class="nav-main-link" href="/admin/cart">
+                                                <span class="nav-main-link-name">Cart</span>
                                             </a>
                                         </li>
                                         <li class="nav-main-item">

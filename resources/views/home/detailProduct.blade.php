@@ -203,8 +203,8 @@
                                 </div>
                             </div>
                             <div class="col-sm-8 mb-6 w-100 px-2">
-                                <button type="submit" class="btn btn-primary btn-block ">add to cart
-                                </button>
+                                <a href="/cart" class="btn btn-primary btn-block ">add to cart
+                                </a>
                             </div>
                         </div>
 

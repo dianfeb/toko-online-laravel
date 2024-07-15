@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\CartItem;
 use App\Models\Category;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -26,6 +27,11 @@ class TemplateProvider extends ServiceProvider
             // ..
             $category = Category::latest()->get();
             $view->with('categories', $category);
+        });
+
+        view::composer('home.templates.header', function($view) {
+            $cartItemCount = CartItem::count(); // Menghitung jumlah item dalam keranjang
+            $view->with('cartItemCount', $cartItemCount); // Mengirimkan variabel $cartItemCount ke view
         });
 
     }

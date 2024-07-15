@@ -1,5 +1,6 @@
 @extends('home.templates.header')
 
+@section('title', 'Toko Online Laravel | Account Page')
 
 @section('content')
 <section class="py-3 bg-color-3" data-animated-id="1">
