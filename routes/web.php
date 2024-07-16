@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Front\CheckoutController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\AdminLoginController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Front\CartController as FrontCartController;
 use App\Http\Controllers\Front\HomeController as FrontHomeController;
 
@@ -54,6 +55,7 @@ Route::prefix('admin')->group(function () {
 
         Route::resource('/category', CategoryController::class);
         Route::resource('/product', ProductController::class);
+        Route::resource('/order', OrderController::class);
        
     });
 });
@@ -61,7 +63,7 @@ Route::prefix('admin')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/account', [AccountController::class, 'index'])->name('account');
     Route::post('/account/update', [AccountController::class, 'update'])->name('account.update');
-    
+
     Route::get('/cart', [FrontCartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add/{productId}', [FrontCartController::class, 'addToCart'])->name('cart.add');
     Route::post('/cart/remove/{cartItemId}', [FrontCartController::class, 'removeFromCart'])->name('cart.remove');
@@ -70,6 +72,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/checkout', [CheckoutController::class, 'checkout'])->name('checkout');
     Route::get('/checkout', [CheckoutController::class, 'showCheckoutForm'])->name('checkout.form');
     Route::post('/checkout/complete', [CheckoutController::class, 'complete'])->name('checkout.complete');
+    Route::post('/checkout/pay-later', [CheckoutController::class, 'payLater'])->name('checkout.payLater');
 
 //     Route::post('/checkout', [CheckoutController::class, 'checkout'])->name('checkout');
 // Route::get('/checkout', [CheckoutController::class, 'showCheckoutForm'])->name('checkout.form');

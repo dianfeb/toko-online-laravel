@@ -15,6 +15,7 @@
     <section class="pb-11 pb-lg-15 pt-10" data-animated-id="2">
         <div class="container">
             <h2 class="fs-sm-40 mb-9 text-center">Shopping Cart</h2>
+            @if ($cart && $cart->cartItems->count() > 0)
             <form>
                 <div class="row">
                     <div class="col-lg-9 mb-9 mb-lg-0 pr-lg-13">
@@ -73,10 +74,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <p class="fs-15 text-primary pt-1 mb-0">
-                            <span class="d-inline-block mr-2 fs-14"><i class="fas fa-info-circle"></i></span>
-                            Special instruction for seller
-                        </p>
+
                     </div>
                     <div class="col-lg-3">
                         <div class="card border-0">
@@ -93,15 +91,21 @@
                             <div class="card-footer pt-4 px-0 bg-transparent">
                                 <div class="d-flex align-items-center font-weight-bold mb-7">
                                     <span class="text-primary">Total</span>
-                                    <span class="d-block ml-auto text-primary">Rp. {{ number_format($cart->cartItems->sum(function($cartItem) { return $cartItem->quantity * $cartItem->product->price; }) + 20, 2) }}</span>
+                                    <span class="d-block ml-auto text-primary">Rp. {{ number_format($cart->cartItems->sum(function($cartItem) { return $cartItem->quantity * $cartItem->product->price; }), 2) }}</span>
                                 </div>
                                 <!-- <input type="text" name="coupon" class="form-control w-100 text-primary mb-3" placeholder="Enter coupon code here"> -->
-                                <a href="{{ route('checkout.form') }}" class="btn btn-primary btn-block" value="Check Out">Check Out</a>
+                                <a href="/checkout" class="btn btn-primary btn-block" value="Check Out">Check Out</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </form>
+            @else
+            <div class="text-center">
+                <h4 class="text-danger">Your cart is empty.</h4>
+                <a href="{{ route('home.index') }}" class="btn btn-primary mt-3">Go Shopping</a>
+            </div>
+            @endif
         </div>
     </section>
     

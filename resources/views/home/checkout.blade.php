@@ -22,9 +22,24 @@
                 <div class="col-lg-6 mb-9 mb-lg-0">
                     <h3 class="fs-24 mb-7">Billing details</h3>
                     <div class="form-group mb-5">
+                        <label for="name" class="mb-2 text-primary font-weight-500">Name <abbr
+                                class="text-danger text-decoration-none" title="required">*</abbr></label>
+                        <input type="text" id="name" class="form-control" name="name" required="">
+                    </div>
+
+                    <div class="form-group mb-5">
+                        <label for="phone" class="mb-2 text-primary font-weight-500">Phone <abbr
+                                class="text-danger text-decoration-none" title="required">*</abbr></label>
+                        <input type="text" id="phone" class="form-control" name="phone" required="">
+                    </div>
+
+                    
+                    <div class="form-group mb-5">
                         <label for="address" class="mb-2 text-primary font-weight-500">Address <abbr
                                 class="text-danger text-decoration-none" title="required">*</abbr></label>
-                        <input type="text" id="address" class="form-control" name="address" required="">
+                                <textarea class="form-control form-control-alt" id="address" name="address" 
+                                        rows="7" required=""></textarea>
+                        
                     </div>
                 </div>
                 <div class="col-lg-6 pl-lg-13">
@@ -49,15 +64,14 @@
                                 <div class="text-primary">Total</div>
                                 <div class="text-primary font-weight-bolder ml-auto">Rp. {{ number_format($cart->cartItems->sum(function($cartItem) { return $cartItem->quantity * $cartItem->product->price; }), 0, ',', '.') }}</div>
                             </div>
-                            
-                            <p class="mb-8">Your personal data will be used to process your order, support your
-                                experience throughout
-                                this website, and for other purposes described in our <a href="#">privacy
-                                    policy</a> .
-                            </p>
+                        
                             <input type="hidden" name="snap_token" id="snap_token">
-                            <button id="pay-button" class="btn btn-outline-primary btn-block" type="button">
-                                Place Order
+                            <input type="hidden" name="order_id" id="order_id">
+                            <button id="pay-now-button" class="btn btn-outline-primary btn-block" type="button">
+                                Pay Now
+                            </button>
+                            <button id="pay-later-button" class="btn btn-outline-secondary btn-block" type="button">
+                                Pay Later
                             </button>
                         </div>
                     </div>
@@ -67,9 +81,9 @@
     </div>
 </section>
 
-<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('MIDTRANS_CLIENT_KEY') }}"></script>
+<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
 <script type="text/javascript">
-    document.getElementById('pay-button').onclick = function(){
+    document.getElementById('pay-now-button').onclick = function(){
         fetch('{{ route("checkout") }}', {
             method: 'POST',
             headers: {
@@ -77,19 +91,22 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             body: JSON.stringify({
-                address: document.getElementById('address').value
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('address').value,
             })
         })
         .then(response => response.json())
         .then(data => {
             if(data.snap_token) {
+                document.getElementById('snap_token').value = data.snap_token;
+                document.getElementById('order_id').value = data.order_id;
+
                 snap.pay(data.snap_token, {
                     onSuccess: function(result){
-                        document.getElementById('snap_token').value = data.snap_token;
                         document.getElementById('checkout-form').submit();
                     },
                     onPending: function(result){
-                        document.getElementById('snap_token').value = data.snap_token;
                         document.getElementById('checkout-form').submit();
                     },
                     onError: function(result){
@@ -99,6 +116,32 @@
                         alert('You closed the payment popup without finishing the payment');
                     }
                 });
+            } else {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    };
+
+    document.getElementById('pay-later-button').onclick = function(){
+        fetch('{{ route("checkout.payLater") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('address').value,
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                window.location.href = '{{ route("account") }}';
             } else {
                 alert('Error: ' + data.error);
             }

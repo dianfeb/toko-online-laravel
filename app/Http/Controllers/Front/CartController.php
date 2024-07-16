@@ -11,12 +11,12 @@ use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
-    //
     public function index()
     {
         $cart = Cart::with('cartItems.product')->where('user_id', Auth::id())->first();
         return view('home.cart', compact('cart'));
     }
+
     public function addToCart($productId, Request $request)
     {
         $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
@@ -45,8 +45,8 @@ class CartController extends Controller
 
     public function updateCart(Request $request)
     {
-        foreach ($request->cartItems as $cartItemId => $quantity) {
-            $cartItem = CartItem::findOrFail($cartItemId);
+        foreach ($request->number as $index => $quantity) {
+            $cartItem = CartItem::findOrFail($index);
             $cartItem->quantity = $quantity;
             $cartItem->save();
         }

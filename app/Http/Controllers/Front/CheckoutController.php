@@ -16,7 +16,7 @@ class CheckoutController extends Controller
 {
     public function __construct()
     {
-        // Set konfigurasi Midtrans
+        // Set Midtrans configuration
         Config::$serverKey = config('midtrans.server_key');
         Config::$isProduction = config('midtrans.is_production');
         Config::$isSanitized = config('midtrans.is_sanitized');
@@ -37,6 +37,8 @@ class CheckoutController extends Controller
     public function checkout(Request $request)
     {
         $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:13',
             'address' => 'required|string|max:255',
         ]);
 
@@ -50,8 +52,28 @@ class CheckoutController extends Controller
             return $cartItem->quantity * $cartItem->product->price;
         });
 
+        // Create the order and save order items before payment
+        $order = new Order();
+        $order->user_id = Auth::id();
+        $order->name = $request->name;
+        $order->phone = $request->phone;
+        $order->address = $request->address;
+        $order->total = $totalPrice;
+        $order->status = 'pending'; // Set initial status to pending
+        $order->save();
+
+        foreach ($cart->cartItems as $cartItem) {
+            $orderItem = new OrderItem();
+            $orderItem->order_id = $order->id;
+            $orderItem->product_id = $cartItem->product_id;
+            $orderItem->quantity = $cartItem->quantity;
+            $orderItem->price = $cartItem->product->price;
+            $orderItem->save();
+        }
+
+        // Prepare Midtrans transaction
         $transactionDetails = [
-            'order_id' => uniqid(),
+            'order_id' => $order->id, // Use order ID for tracking
             'gross_amount' => $totalPrice,
         ];
 
@@ -65,7 +87,7 @@ class CheckoutController extends Controller
         })->toArray();
 
         $customerDetails = [
-            'first_name' => Auth::user()->name,
+            'name' => Auth::user()->name,
             'email' => Auth::user()->email,
             'phone' => Auth::user()->phone,
         ];
@@ -78,7 +100,7 @@ class CheckoutController extends Controller
 
         try {
             $snapToken = Snap::getSnapToken($transaction);
-            return response()->json(['snap_token' => $snapToken]);
+            return response()->json(['snap_token' => $snapToken, 'order_id' => $order->id]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -87,51 +109,78 @@ class CheckoutController extends Controller
     public function complete(Request $request)
     {
         $orderData = $request->validate([
+           'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:15',
             'address' => 'required|string|max:255',
             'snap_token' => 'required|string',
+            'order_id' => 'required|integer',
         ]);
 
-        // Verifikasi pembayaran dengan Midtrans (tanpa webhook)
+        // Verify payment with Midtrans (without webhook)
         $status = Transaction::status($orderData['snap_token']);
 
-        // Pastikan bahwa $status adalah objek dan transaction_status ada
-        if (is_object($status) && isset($status->transaction_status)) {
-            $cart = Cart::with('cartItems.product')->where('user_id', Auth::id())->first();
+        // Ensure that $status is an object and transaction_status exists
+        if (is_object($status) && isset($status->transaction_status) && ($status->transaction_status == 'capture' || $status->transaction_status == 'settlement')) {
+            $order = Order::find($orderData['order_id']);
+            if ($order) {
+                $order->status = 'paid';
+                $order->save();
 
-            // Buat order baru
-            $order = new Order();
-            $order->user_id = Auth::id();
-            $order->address = $orderData['address'];
-            $order->total = $cart->cartItems->sum(function ($cartItem) {
-                return $cartItem->quantity * $cartItem->product->price;
-            });
+                $cart = Cart::with('cartItems.product')->where('user_id', Auth::id())->first();
+                $cart->cartItems()->delete();
+                $cart->delete();
 
-            // Set status based on transaction status
-            if ($status->transaction_status == 'capture' || $status->transaction_status == 'settlement') {
-                $order->status = 'dibayar';  // Payment completed
+                return redirect()->route('home.index')->with('success', 'Your order has been placed successfully.');
             } else {
-                $order->status = 'belum dibayar';  // Payment not completed
+                return redirect()->route('home.cart')->with('error', 'Order not found.');
             }
-
-            $order->save();
-
-            // Pindahkan item dari cart ke order items
-            foreach ($cart->cartItems as $cartItem) {
-                $orderItem = new OrderItem();
-                $orderItem->order_id = $order->id;
-                $orderItem->product_id = $cartItem->product_id;
-                $orderItem->quantity = $cartItem->quantity;
-                $orderItem->price = $cartItem->product->price;
-                $orderItem->save();
-            }
-
-            // Hapus cart setelah checkout
-            $cart->cartItems()->delete();
-            $cart->delete();
-
-            return redirect()->route('home.index')->with('success', 'Your order has been placed successfully.');
         } else {
             return redirect()->route('home.cart')->with('error', 'Payment not completed.');
         }
+    }
+
+    public function payLater(Request $request)
+    {
+        $request->validate([
+            'address' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:13',
+            'address' => 'required|string|max:255',
+        ]);
+
+        $cart = Cart::with('cartItems.product')->where('user_id', Auth::id())->first();
+
+        if (!$cart) {
+            return response()->json(['error' => 'Your cart is empty.']);
+        }
+
+        $totalPrice = $cart->cartItems->sum(function ($cartItem) {
+            return $cartItem->quantity * $cartItem->product->price;
+        });
+
+        // Create the order and save order items without processing payment
+        $order = new Order();
+        $order->user_id = Auth::id();
+        $order->name = $request->name;
+        $order->phone = $request->phone;
+        $order->address = $request->address;
+        $order->total = $totalPrice;
+        $order->status = 'pending'; // Set initial status to pending
+        $order->save();
+
+        foreach ($cart->cartItems as $cartItem) {
+            $orderItem = new OrderItem();
+            $orderItem->order_id = $order->id;
+            $orderItem->product_id = $cartItem->product_id;
+            $orderItem->quantity = $cartItem->quantity;
+            $orderItem->price = $cartItem->product->price;
+            $orderItem->save();
+        }
+
+        // Clear the cart after creating the order
+        $cart->cartItems()->delete();
+        $cart->delete();
+
+        return response()->json(['success' => true]);
     }
 }

@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('address');
-            $table->decimal('total', 10, 2);
-            $table->string('status')->default('belum dibayar');
+            $table->string('name');
+            $table->string('phone');
+            $table->decimal('total', 15, 2);
+            $table->enum('status', ['pending', 'paid', 'failed'])->default('pending');
             $table->timestamps();
         });
     }

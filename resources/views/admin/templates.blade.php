@@ -88,8 +88,8 @@
                                             </a>
                                         </li>
                                         <li class="nav-main-item">
-                                            <a class="nav-main-link" href="be_pages_ecom_products.html">
-                                                <span class="nav-main-link-name">Products</span>
+                                            <a class="nav-main-link" href="/admin/order">
+                                                <span class="nav-main-link-name">Order</span>
                                             </a>
                                         </li>
                                         <li class="nav-main-item">
@@ -99,7 +99,7 @@
                                         </li>
                                         <li class="nav-main-item">
                                             <a class="nav-main-link" href="be_pages_ecom_customer.html">
-                                                <span class="nav-main-link-name">Customer</span>
+                                                <span class="nav-main-link-name">zot</span>
                                             </a>
                                         </li>
                                     </ul>
