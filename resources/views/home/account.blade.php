@@ -82,27 +82,20 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
+                                                        @foreach($orders as $order)
                                                         <tr>
-                                                            <td>#1357</td>
-                                                            <td>March 45, 2020</td>
-                                                            <td>Processing</td>
-                                                            <td>$125.00 for 2 item</td>
+                                                            <td>#{{ $order->id }}</td>
+                                                            <td>{{ $order->created_at->format('F j, Y') }}</td>
+                                                            <td>{{ ucfirst($order->status) }}</td>
+                                                            <td>Rp. {{ number_format($order->total, 0, ',', '.') }}</td>
                                                             <td><a href="#" class="btn-small d-block">View</a></td>
                                                         </tr>
+                                                        @endforeach
+                                                        @if($orders->isEmpty())
                                                         <tr>
-                                                            <td>#2468</td>
-                                                            <td>June 29, 2020</td>
-                                                            <td>Completed</td>
-                                                            <td>$364.00 for 5 item</td>
-                                                            <td><a href="#" class="btn-small d-block">View</a></td>
+                                                            <td colspan="5" class="text-center">No orders found.</td>
                                                         </tr>
-                                                        <tr>
-                                                            <td>#2366</td>
-                                                            <td>August 02, 2020</td>
-                                                            <td>Completed</td>
-                                                            <td>$280.00 for 3 item</td>
-                                                            <td><a href="#" class="btn-small d-block">View</a></td>
-                                                        </tr>
+                                                        @endif
                                                     </tbody>
                                                 </table>
                                             </div>

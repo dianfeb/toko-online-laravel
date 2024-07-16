@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Models\User;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
@@ -11,9 +12,11 @@ use Illuminate\Support\Facades\Auth;
 class AccountController extends Controller
 {
     //
-    public function index() {
+    public function index()
+    {
         $user = Auth::user();
-        return view('home.account', compact('user'));
+        $orders = Order::where('user_id', Auth::id())->orderBy('created_at', 'desc')->get();
+        return view('home.account', compact('user', 'orders'));
     }
 
     public function update(Request $request)
@@ -49,6 +52,5 @@ class AccountController extends Controller
         User::find($user->id)->update($userData);
 
         return redirect()->route('account')->with('status', 'Profile updated successfully.');
-    
     }
 }

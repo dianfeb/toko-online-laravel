@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Front\AccountController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Front\CheckoutController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\AdminLoginController;
 use App\Http\Controllers\Front\CartController as FrontCartController;
@@ -53,19 +54,25 @@ Route::prefix('admin')->group(function () {
 
         Route::resource('/category', CategoryController::class);
         Route::resource('/product', ProductController::class);
-        Route::resource('/cart', CartController::class);
+       
     });
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/account', [AccountController::class, 'index']);
     Route::get('/account', [AccountController::class, 'index'])->name('account');
-    Route::post('/account', [AccountController::class, 'update'])->name('account.update');
-
+    Route::post('/account/update', [AccountController::class, 'update'])->name('account.update');
+    
     Route::get('/cart', [FrontCartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add/{productId}', [FrontCartController::class, 'addToCart'])->name('cart.add');
     Route::post('/cart/remove/{cartItemId}', [FrontCartController::class, 'removeFromCart'])->name('cart.remove');
     Route::post('/cart/update', [FrontCartController::class, 'updateCart'])->name('cart.update');
+
+    Route::post('/checkout', [CheckoutController::class, 'checkout'])->name('checkout');
+    Route::get('/checkout', [CheckoutController::class, 'showCheckoutForm'])->name('checkout.form');
+    Route::post('/checkout/complete', [CheckoutController::class, 'complete'])->name('checkout.complete');
+
+//     Route::post('/checkout', [CheckoutController::class, 'checkout'])->name('checkout');
+// Route::get('/checkout', [CheckoutController::class, 'showCheckoutForm'])->name('checkout.form');
 });
 
 

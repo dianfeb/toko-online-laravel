@@ -96,7 +96,7 @@
                                     <span class="d-block ml-auto text-primary">Rp. {{ number_format($cart->cartItems->sum(function($cartItem) { return $cartItem->quantity * $cartItem->product->price; }) + 20, 2) }}</span>
                                 </div>
                                 <!-- <input type="text" name="coupon" class="form-control w-100 text-primary mb-3" placeholder="Enter coupon code here"> -->
-                                <a href="/checkout" class="btn btn-primary btn-block" value="Check Out">Check Out</a>
+                                <a href="{{ route('checkout.form') }}" class="btn btn-primary btn-block" value="Check Out">Check Out</a>
                             </div>
                         </div>
                     </div>
