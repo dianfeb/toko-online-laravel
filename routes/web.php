@@ -6,13 +6,14 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\CartController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Front\AccountController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Front\CheckoutController;
+use App\Http\Controllers\Front\WishlistController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\AdminLoginController;
-use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Front\CartController as FrontCartController;
 use App\Http\Controllers\Front\HomeController as FrontHomeController;
 
@@ -30,12 +31,7 @@ use App\Http\Controllers\Front\HomeController as FrontHomeController;
 
 Route::get('/', [FrontHomeController::class, 'index'])->name('home.index');
 Route::get('/detail/{slug}', [FrontHomeController::class, 'detailProduct'])->name('detail.product');
-Route::get('/cart', function () {
-    return view('home.cart');
-});
-Route::get('/checkout', function () {
-    return view('home.checkout');
-});
+
 
 
 
@@ -64,18 +60,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/account', [AccountController::class, 'index'])->name('account');
     Route::post('/account/update', [AccountController::class, 'update'])->name('account.update');
 
+
     Route::get('/cart', [FrontCartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add/{productId}', [FrontCartController::class, 'addToCart'])->name('cart.add');
     Route::post('/cart/remove/{cartItemId}', [FrontCartController::class, 'removeFromCart'])->name('cart.remove');
     Route::post('/cart/update', [FrontCartController::class, 'updateCart'])->name('cart.update');
+
 
     Route::post('/checkout', [CheckoutController::class, 'checkout'])->name('checkout');
     Route::get('/checkout', [CheckoutController::class, 'showCheckoutForm'])->name('checkout.form');
     Route::post('/checkout/complete', [CheckoutController::class, 'complete'])->name('checkout.complete');
     Route::post('/checkout/pay-later', [CheckoutController::class, 'payLater'])->name('checkout.payLater');
 
-//     Route::post('/checkout', [CheckoutController::class, 'checkout'])->name('checkout');
-// Route::get('/checkout', [CheckoutController::class, 'showCheckoutForm'])->name('checkout.form');
+
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('/wishlist/add/{productId}', [WishlistController::class, 'add'])->name('wishlist.add');
+    Route::post('/wishlist/remove/{itemId}', [WishlistController::class, 'remove'])->name('wishlist.remove');
+
+
 });
 
 

@@ -1,87 +1,92 @@
 @extends('home.templates.header')
 @section('title', 'Toko Online Laravel | Home')
 @section('content')
-<section class="overflow-hidden">
-    <div class="slick-slider custom-slider-02"
-        data-slick-options="{&quot;slidesToShow&quot;: 1,&quot;infinite&quot;:true,&quot;autoplay&quot;:false,&quot;dots&quot;:true,&quot;arrows&quot;:false}">
-        <div class="box">
-            <div class="d-flex flex-column bg-img-cover-center vh-100 pt-xxl-13 custom-height-sm"
-                style="background-image: url('assets/images/bg-home-03.jpg')">
-                <div
-                    class="d-flex flex-column h-100 align-items-center justify-content-center justify-content-xxl-start pt-xxl-13">
-                    <div class="container container-xxl">
-                        <h1 class="mb-6 fs-40 fs-xxl-90 lh-1 text-center" data-animate="fadeInUp">Table
-                            Extendable</h1>
-                        <div class="text-center">
-                            <a href="shop-page-02.html"
-                                class="btn btn-outline-primary text-uppercase letter-spacing-05"
-                                data-animate="fadeInUp">Shop Now</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="mt-auto">
-                    <div class="container container-xxl">
-                        <p class="text-primary mb-8">Designed by <span class="font-weight-600">Nicholas
-                                Karlovasitis & Sarah Gibson</span></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-    </div>
-</section>
-<section class="py-lg-15 py-11">
-    <h2 class="text-center fs-30 fs-md-40 mb-8">Featured Items</h2>
-    <div class="container container-xxl">
-        <div class="d-grid g-1 g-sm-2 g-lg-4 grid-gap overflow-hidden">
-            @foreach ($products as $item)
-            <div class="grid-item gc-lg-1 gr-lg-1" data-animate="fadeInUp">
-                <div class="card border-0 hover-change-content product product-03">
-                    <div style="background-image: url('{{ url('storage/product/'.$item->img) }}')"
-                        class="card-img ratio bg-img-cover-center ratio-1-1 ratio-lg-1-1">
-                    </div>
-                    <div class="card-img-overlay d-flex py-4 py-sm-5 pl-6 pr-4">
-                        <div class="d-flex flex-column">
-                            <a href="#" class="font-weight-bold mb-1 d-block lh-12">{{ $item->name }}</a>
-                            <a href="#"
-                                class="text-uppercase text-muted letter-spacing-05 fs-13 font-weight-500">{{ $item->category->name }}</a>
-                            <div class="mt-auto price-wrap">
-                                <p class="mt-auto text-primary mb-0 price font-weight-500">
-                                    Rp. {{ $item->price }}</p>
-                                    {{-- route cart --}}
-                                    <form action="{{ route('cart.add', $item->id) }}" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="quantity" value="1">
-                                        <button type="submit" class="fs-14 font-weight-500 border-bottom border-light-dark border-hover-primary text-uppercase letter-spacing-05 add-to-cart d-inline-block">
-                                            Add to cart
-                                        </button>
-                                    </form>
+    <section class="overflow-hidden">
+        <div class="slick-slider custom-slider-02"
+            data-slick-options="{&quot;slidesToShow&quot;: 1,&quot;infinite&quot;:true,&quot;autoplay&quot;:false,&quot;dots&quot;:true,&quot;arrows&quot;:false}">
+            <div class="box">
+                <div class="d-flex flex-column bg-img-cover-center vh-100 pt-xxl-13 custom-height-sm"
+                    style="background-image: url('assets/images/bg-home-03.jpg')">
+                    <div
+                        class="d-flex flex-column h-100 align-items-center justify-content-center justify-content-xxl-start pt-xxl-13">
+                        <div class="container container-xxl">
+                            <h1 class="mb-6 fs-40 fs-xxl-90 lh-1 text-center" data-animate="fadeInUp">Welcome To Toko Online
+                                Laravel</h1>
+                            <div class="text-center">
+                                <a href="shop-page-02.html" class="btn btn-outline-primary text-uppercase letter-spacing-05"
+                                    data-animate="fadeInUp">Shop Now</a>
                             </div>
                         </div>
-                        <div class="ml-auto d-flex flex-column">
-                            <div class="content-change-vertical">
-                                <a href="#" data-toggle="tooltip" data-placement="left"
-                                    title="Add to favourite"
-                                    class="add-to-wishlist d-flex align-items-center justify-content-center text-primary bg-white hover-white bg-hover-primary w-45px h-45px rounded-circle mb-2 border">
-                                    <i class="fa fa-heart"></i>
-                                </a>
-                                
-                                <a href="{{ url('detail/'.$item->slug) }}" data-toggle="tooltip" data-placement="left"
-                                    title="Preview"
-                                    class="preview d-flex align-items-center justify-content-center text-primary bg-white hover-white bg-hover-primary w-45px h-45px rounded-circle mb-2 border">
-                                    <i class="fa fa-eye"></i>
-                                </a>
-                            </div>
+                    </div>
+                    <div class="mt-auto">
+                        <div class="container container-xxl">
+                            <p class="text-primary mb-8">Designed by <span class="font-weight-600">Nicholas
+                                    Karlovasitis & Sarah Gibson</span></p>
                         </div>
                     </div>
                 </div>
             </div>
-            @endforeach      
-        </div>
-    </div>
-</section>
 
-{{-- <section class="pb-12 pb-lg-15 border-bottom">
+        </div>
+    </section>
+    <section class="py-lg-15 py-11">
+        <h2 class="text-center fs-30 fs-md-40 mb-8">Featured Items</h2>
+        <div class="container container-xxl">
+            <div class="d-grid g-1 g-sm-2 g-lg-4 grid-gap overflow-hidden">
+                @foreach ($products as $item)
+                    <div class="grid-item gc-lg-1 gr-lg-1" data-animate="fadeInUp">
+                        <div class="card border-0 hover-change-content product product-03">
+                            <div style="background-image: url('{{ url('storage/product/' . $item->img) }}')"
+                                class="card-img ratio bg-img-cover-center ratio-1-1 ratio-lg-1-1">
+                            </div>
+                            <div class="card-img-overlay d-flex py-4 py-sm-5 pl-6 pr-4">
+                                <div class="d-flex flex-column">
+                                    <a href="#" class="font-weight-bold mb-1 d-block lh-12">{{ $item->name }}</a>
+                                    <a href="#"
+                                        class="text-uppercase text-muted letter-spacing-05 fs-13 font-weight-500">{{ $item->category->name }}</a>
+                                    <div class="mt-auto price-wrap">
+                                        <p class="mt-auto text-primary mb-0 price font-weight-500">
+                                            Rp. {{ $item->price }}</p>
+                                        {{-- route cart --}}
+                                        <form action="{{ route('cart.add', $item->id) }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="quantity" value="1">
+                                            <button type="submit"
+                                                class="fs-14 font-weight-500 border-bottom border-light-dark border-hover-primary text-uppercase letter-spacing-05 add-to-cart d-inline-block">
+                                                Add to cart
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="ml-auto d-flex flex-column">
+                                    <div class="content-change-vertical">
+                                        <form id="wishlist-form-{{ $item->id }}" action="{{ route('wishlist.add', $item->id) }}" method="POST" style="display: none;">
+                                            @csrf
+                                        </form>
+                                        <a href="#" data-toggle="tooltip" data-placement="left"
+                                        title="Add to favourite"
+                                        class="add-to-wishlist d-flex align-items-center justify-content-center text-primary bg-white hover-white bg-hover-primary w-45px h-45px rounded-circle mb-2 border"
+                                        onclick="event.preventDefault(); document.getElementById('wishlist-form-{{ $item->id }}').submit();">
+                                        <i class="fa fa-heart"></i>
+                                    </a>
+                                    
+
+                                        <a href="{{ url('detail/' . $item->slug) }}" data-toggle="tooltip"
+                                            data-placement="left" title="Preview"
+                                            class="preview d-flex align-items-center justify-content-center text-primary bg-white hover-white bg-hover-primary w-45px h-45px rounded-circle mb-2 border">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    {{-- <section class="pb-12 pb-lg-15 border-bottom">
     <div class="container">
         <h2 class="fs-30 fs-md-40 mb-11 text-center">Happy Clients</h2>
         <div class="slick-slider custom-arrow-1"
@@ -260,4 +265,10 @@
 
 @endsection
 
-       
+@push('js')
+    <script>
+        $(function() {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+@endpush

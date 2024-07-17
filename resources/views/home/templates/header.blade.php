@@ -101,9 +101,9 @@
                                     
                                     @if(auth()->check())
                                     <li class="nav-item">
-                                        <a class="nav-link position-relative px-3 py-0" href="#">
+                                        <a class="nav-link position-relative px-3 py-0" href="/wishlist">
                                             <i class="fa fa-heart"></i>
-                                            <span class="position-absolute number">0</span>
+                                            <span class="position-absolute number">{{ $wishlistItemCount }}</span>
                                         </a>
                                     </li>
                                     <li class="nav-item">
@@ -779,7 +779,7 @@
         <div class="pt-5 pb-7 card border-0 h-100">
             <div class="d-flex align-items-center card-header border-0 py-0 pl-8 pr-7 mb-9 bg-transparent">
                 <a href="index.html" class="d-block w-52px">
-                    <img src="images/short_logo.png" alt="Furnitor">
+                    <img src="/assets/images/short_logo.png" alt="Furnitor">
                 </a>
                 <span class="canvas-close d-inline-block text-right fs-24 ml-auto lh-1 text-primary"><i
                         class="fal fa-times"></i></span>

@@ -1,11 +1,12 @@
 @extends('home.templates.header')
+@section('title', 'Toko Online Laravel | Cart')
 
 @section('content')
     <section class="py-3 bg-color-3" data-animated-id="1">
         <div class="container">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb py-0">
-                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
                     <li class="breadcrumb-item"><a href="#"> Pages </a></li>
                     <li class="breadcrumb-item active" aria-current="page">Shopping Cart</li>
                 </ol>
@@ -48,9 +49,6 @@
                                                     <a href="{{ url('detail/'.$cartItem->product->slug) }}" class="font-weight-bold mb-1 d-block">
                                                         {{ $cartItem->product->name }}
                                                     </a>
-                                                    {{-- <p class="fs-15 text-primary d-block mb-0">
-                                                        {{ $cartItem->product->color }} / {{ $cartItem->product->size }}
-                                                    </p> --}}
                                                 </div>
                                             </div>
                                         </td>
