@@ -2,20 +2,29 @@
 
 namespace App\Http\Controllers\Front;
 
+use Midtrans\Snap;
 use App\Models\Cart;
+use Midtrans\Config;
 use App\Models\Order;
 use App\Models\OrderItem;
+use Midtrans\Transaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Midtrans\Snap;
-use Midtrans\Config;
-use Midtrans\Transaction;
+use Dipantry\Rajaongkir\Models\ROCity;
+use Dipantry\Rajaongkir\Models\ROProvince;
+use Dipantry\Rajaongkir\Models\ROSubDistrict;
+use Dipantry\Rajaongkir\Rajaongkir;
+use Dipantry\Rajaongkir\Constants\RajaongkirCourier;
 
 class CheckoutController extends Controller
 {
-    public function __construct()
+    protected $rajaongkir;
+
+    public function __construct(Rajaongkir $rajaongkir)
     {
+        $this->rajaongkir = $rajaongkir;
+
         // Set Midtrans configuration
         Config::$serverKey = config('midtrans.server_key');
         Config::$isProduction = config('midtrans.is_production');
@@ -23,15 +32,55 @@ class CheckoutController extends Controller
         Config::$is3ds = config('midtrans.is_3ds');
     }
 
+    public function get_province()
+    {
+        $provinces = ROProvince::all();
+        return response()->json($provinces);
+    }
+
+    public function get_city($province_id)
+    {
+        $cities = ROCity::where('province_id', $province_id)->get();
+        return response()->json($cities);
+    }
+
+    public function get_subdistrict($city_id)
+    {
+        $subdistricts = ROSubDistrict::where('city_id', $city_id)->get();
+        return response()->json($subdistricts);
+    }
+
     public function showCheckoutForm()
     {
         $cart = Cart::with('cartItems.product')->where('user_id', Auth::id())->first();
-        
+
         if (!$cart) {
             return redirect()->route('home.cart')->with('error', 'Your cart is empty.');
         }
 
         return view('home.checkout', compact('cart'));
+    }
+
+   
+    public function getShippingCost(Request $request)
+    {
+        $origin = $request->input('origin');
+    $destination = $request->input('destination');
+    $weight = $request->input('weight');
+    $courier = 'jne'; // Use courier code as a string
+
+    try {
+        $cost = $this->rajaongkir->getOngkirCost(
+            $origin,
+            $destination,
+            $weight,
+            $courier
+        );
+
+        return response()->json(['cost' => $cost]);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
     }
 
     public function checkout(Request $request)
@@ -109,7 +158,7 @@ class CheckoutController extends Controller
     public function complete(Request $request)
     {
         $orderData = $request->validate([
-           'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'phone' => 'required|string|max:15',
             'address' => 'required|string|max:255',
             'snap_token' => 'required|string',

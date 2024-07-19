@@ -160,6 +160,9 @@ return [
          * Package Service Providers...
          */
 
+         Dipantry\Rajaongkir\ServiceProvider::class,
+        
+
         /*
          * Application Service Providers...
          */
@@ -184,6 +187,8 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
+        'Rajaongkir' => Dipantry\Rajaongkir\Facade::class,
     ])->toArray(),
 
+ 
 ];

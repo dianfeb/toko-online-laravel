@@ -32,8 +32,13 @@ use App\Http\Controllers\Front\HomeController as FrontHomeController;
 Route::get('/', [FrontHomeController::class, 'index'])->name('home.index');
 Route::get('/detail/{slug}', [FrontHomeController::class, 'detailProduct'])->name('detail.product');
 
-
-
+Route::get('/test-rajaongkir', function () {
+    $apiKey = config('rajaongkir.api_key');
+    $package = config('rajaongkir.package');
+    $timeout = config('rajaongkir.timeout');
+    
+    dd($apiKey, $package, $timeout);
+});
 
 Auth::routes();
 
@@ -71,6 +76,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'showCheckoutForm'])->name('checkout.form');
     Route::post('/checkout/complete', [CheckoutController::class, 'complete'])->name('checkout.complete');
     Route::post('/checkout/pay-later', [CheckoutController::class, 'payLater'])->name('checkout.payLater');
+
+    Route::get('/provinces', [CheckoutController::class, 'get_province'])->name('checkout.get_province');
+    Route::get('/cities/{province_id}', [CheckoutController::class, 'get_city'])->name('checkout.get_city');
+    Route::get('/subdistricts/{city_id}', [CheckoutController::class, 'get_subdistrict'])->name('checkout.get_subdistrict');
+    Route::post('/checkout/shipping-cost', [CheckoutController::class, 'getShippingCost'])->name('checkout.shippingCost');
+    
 
 
     Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
