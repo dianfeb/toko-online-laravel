@@ -30,9 +30,7 @@
                                     <li class="nav-item">
                                         <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders" role="tab" aria-controls="orders" aria-selected="false"><i class="fa fa-shopping-bag mr-2"></i>Orders</a>
                                     </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab" href="#track-orders" role="tab" aria-controls="track-orders" aria-selected="false"><i class="fa fa-shopping-cart-check mr-2"></i>Track Your Order</a>
-                                    </li>
+                                   
                                     <li class="nav-item">
                                         <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab" aria-controls="address" aria-selected="true"><i class="fa fa-marker mr-2"></i>My Address</a>
                                     </li>
@@ -78,7 +76,7 @@
                                                             <th>Date</th>
                                                             <th>Status</th>
                                                             <th>Total</th>
-                                                            <th>Actions</th>
+                                                            <th class="text-center">Actions</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -88,7 +86,11 @@
                                                             <td>{{ $order->created_at->format('F j, Y') }}</td>
                                                             <td>{{ ucfirst($order->status) }}</td>
                                                             <td>Rp. {{ number_format($order->total, 0, ',', '.') }}</td>
-                                                            <td><a href="#" class="btn-small d-block">View</a></td>
+                                                            <td class="text-center">
+                                                                <button id="pay-now-button" class="btn btn-outline-primary btn-block" type="button">
+                                                                    Pay Now
+                                                                </button>
+                                                            </td>
                                                         </tr>
                                                         @endforeach
                                                         @if($orders->isEmpty())
@@ -102,46 +104,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane fade" id="track-orders" role="tabpanel" aria-labelledby="track-orders-tab">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h3 class="mb-0">Orders tracking</h3>
-                                        </div>
-                                        <div class="card-body contact-from-area">
-                                            <p>To track your order please enter your OrderID in the box below and press "Track" button. This was given to you on your receipt and in the confirmation email you should have received.</p>
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <form method="POST" action="">
-                                                        @csrf
-                                                        <div class="form-group mb-4">
-                                                            <label for="exampleInputEmail1" class="sr-only">{{ __('Name') }}</label>
-                                                            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus placeholder="Name">
-                        
-                                                            @error('name')
-                                                                <span class="invalid-feedback" role="alert">
-                                                                    <strong>{{ $message }}</strong>
-                                                                </span>
-                                                            @enderror
-                                                        </div>
-                        
-                                                        <div class="form-group mb-4">
-                                                            <label for="exampleInputEmail1" class="sr-only">Phone</label>
-                                                            <input id="phone" type="text" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone') }}" required autocomplete="phone" autofocus placeholder="Phone">
-                        
-                                                            @error('phone')
-                                                                <span class="invalid-feedback" role="alert">
-                                                                    <strong>{{ $message }}</strong>
-                                                                </span>
-                                                            @enderror
-                                                        </div>
-                          
-                                                        <button type="submit" class="btn btn-primary btn-block mb-3">Register</button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                               
                                 <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -193,7 +156,7 @@
                                                 @csrf
                                                 <div class="form-group mb-4">
                                                     <label for="exampleInputEmail1" class="sr-only">{{ __('Name') }}</label>
-                                                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name', $user->name) }}">
+                                                    <input  type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name', $user->name) }}">
                 
                                                     @error('name')
                                                         <span class="invalid-feedback" role="alert">
@@ -204,7 +167,7 @@
                 
                                                 <div class="form-group mb-4">
                                                     <label for="exampleInputEmail1" class="sr-only">Phone</label>
-                                                    <input id="phone" type="text" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone', $user->phone) }}">
+                                                    <input  type="text" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone', $user->phone) }}">
                 
                                                     @error('phone')
                                                         <span class="invalid-feedback" role="alert">
@@ -260,4 +223,51 @@
 
 @push('js')
   <script src="{{ asset('assets/tab/bootstrap.bundle.min.js') }}"></script> 
+  <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
+<script type="text/javascript">
+ document.addEventListener('DOMContentLoaded', function() {
+    let buttons = document.querySelectorAll('.pay-now-button');
+    buttons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            let orderId = this.getAttribute('data-order-id');
+
+            fetch('{{ route("checkout") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    order_id: orderId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.snap_token) {
+                    snap.pay(data.snap_token, {
+                        onSuccess: function(result) {
+                            alert('Payment successful!');
+                        },
+                        onPending: function(result) {
+                            alert('Waiting for payment...');
+                        },
+                        onError: function(result) {
+                            alert('Payment failed: ' + result.message);
+                        },
+                        onClose: function() {
+                            alert('You closed the payment popup without finishing the payment');
+                        }
+                    });
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('There was an error: ' + error.message);
+            });
+        });
+    });
+});
+</script>
 @endpush

@@ -1,5 +1,7 @@
 @extends('home.templates.header')
 
+@section('title', 'Toko Online Laravel | Checkout')
+    
 @section('content')
 <section class="py-3 bg-color-3" data-animated-id="1">
     <div class="container">
@@ -35,41 +37,47 @@
 
                     <div class="form-group mb-5">
                         <label for="province" class="mb-2 text-primary font-weight-500">Province <abbr class="text-danger text-decoration-none" title="required">*</abbr></label>
-                        <select id="province" class="form-control" name="province" required>
+                        <select id="province" class="form-control" name="province_id" required>
                             <option value="">Select Province</option>
                         </select>
                     </div>
 
                     <div class="form-group mb-5">
                         <label for="city" class="mb-2 text-primary font-weight-500">City <abbr class="text-danger text-decoration-none" title="required">*</abbr></label>
-                        <select id="city" class="form-control" name="city" required>
+                        <select id="city" class="form-control" name="city_id" required>
                             <option value="">Select City</option>
                         </select>
                     </div>
 
-                    
+                    <div class="form-group mb-5">
+                        <label for="subdistrict" class="mb-2 text-primary font-weight-500">Subdistrict <abbr class="text-danger text-decoration-none" title="required">*</abbr></label>
+                        <input type="text" id="subdistrict" class="form-control" name="subdistrict" required>
+                    </div>
+
                     <div class="form-group mb-5">
                         <label for="address" class="mb-2 text-primary font-weight-500">Address <abbr class="text-danger text-decoration-none" title="required">*</abbr></label>
                         <textarea class="form-control form-control-alt" id="address" name="address" rows="7" required></textarea>
                     </div>
 
-                    <!-- Origin and Courier Selection -->
+                    <div class="form-group mb-5">
+                        <label for="weight" class="mb-2 text-primary font-weight-500">Weight <abbr class="text-danger text-decoration-none" title="required">*</abbr></label>
+                        <input type="text" id="weight" class="form-control" name="weight" required>
+                    </div>
+
+                    <!-- Courier Selection -->
                     <div class="form-group mb-5">
                         <label for="courier" class="mb-2 text-primary font-weight-500">Courier <abbr class="text-danger text-decoration-none" title="required">*</abbr></label>
                         <select id="courier" class="form-control" name="courier" required>
+                            <option value="">Select Courier</option>
                             <option value="jne">JNE</option>
-                            <option value="pos">POS Indonesia</option>
-                            <option value="tiki">TIKI</option>
+                            <option value="pos">POS INDONESIA</option>
+                            <option value="sicepat">SICEPAT</option>
                         </select>
                     </div>
 
                     <button id="calculate-shipping-cost" class="btn btn-outline-primary btn-block" type="button">
                         Calculate Shipping Cost
                     </button>
-
-                    <div id="shipping-cost" class="mt-3">
-                        <!-- Shipping cost will be displayed here -->
-                    </div>
                 </div>
                 <div class="col-lg-6 pl-lg-13">
                     <h3 class="fs-24 mb-7">Your Order</h3>
@@ -85,13 +93,20 @@
                                 <div class="text-primary ml-auto">Rp. {{ number_format($cartItem->quantity * $cartItem->product->price, 0, ',', '.') }}</div>
                             </div>
                             @endforeach
-                            <div class="pb-3 mb-3 border-bottom d-flex">
-                                <div class="text-primary">Subtotal</div>
-                                <div class="text-primary ml-auto">Rp. {{ number_format($cart->cartItems->sum(function($cartItem) { return $cartItem->quantity * $cartItem->product->price; }), 0, ',', '.') }}</div>
+                            <div id="shipping-cost-container" class="d-none">
+                                <div class="pb-3 mb-3 border-bottom d-flex">
+                                    <div class="text-primary font-weight-bold">Shipping Cost</div>
+                                    <div class="text-primary ml-auto" id="shipping-cost"></div>
+                                </div>
                             </div>
+                            <div class="pb-3 mb-3 border-bottom d-flex">
+                                <div class="text-primary font-weight-bold">Subtotal</div>
+                                <div class="text-primary ml-auto" id="subtotal">Rp. {{ number_format($cart->cartItems->sum(function($cartItem) { return $cartItem->quantity * $cartItem->product->price; }), 0, ',', '.') }}</div>
+                            </div>
+                           
                             <div class="pb-8 mb-3 border-bottom d-flex">
-                                <div class="text-primary">Total</div>
-                                <div class="text-primary font-weight-bolder ml-auto">Rp. {{ number_format($cart->cartItems->sum(function($cartItem) { return $cartItem->quantity * $cartItem->product->price; }), 0, ',', '.') }}</div>
+                                <div class="text-primary font-weight-bold">Total</div>
+                                <div class="text-primary font-weight-bolder ml-auto" id="total-amount">Rp. {{ number_format($cart->cartItems->sum(function($cartItem) { return $cartItem->quantity * $cartItem->product->price; }), 0, ',', '.') }}</div>
                             </div>
 
                             <input type="hidden" name="snap_token" id="snap_token">
@@ -112,74 +127,6 @@
 
 <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
 <script type="text/javascript">
-    document.getElementById('pay-now-button').onclick = function() {
-        fetch('{{ route("checkout") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({
-                name: document.getElementById('name').value,
-                phone: document.getElementById('phone').value,
-                address: document.getElementById('address').value,
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.snap_token) {
-                document.getElementById('snap_token').value = data.snap_token;
-                document.getElementById('order_id').value = data.order_id;
-
-                snap.pay(data.snap_token, {
-                    onSuccess: function(result) {
-                        document.getElementById('checkout-form').submit();
-                    },
-                    onPending: function(result) {
-                        document.getElementById('checkout-form').submit();
-                    },
-                    onError: function(result) {
-                        alert('Payment failed: ' + result.message);
-                    },
-                    onClose: function() {
-                        alert('You closed the payment popup without finishing the payment');
-                    }
-                });
-            } else {
-                alert('Error: ' + data.error);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    };
-
-    document.getElementById('pay-later-button').onclick = function() {
-        fetch('{{ route("checkout.payLater") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({
-                name: document.getElementById('name').value,
-                phone: document.getElementById('phone').value,
-                address: document.getElementById('address').value,
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                window.location.href = '{{ route("account") }}';
-            } else {
-                alert('Error: ' + data.error);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    };
-
     document.addEventListener('DOMContentLoaded', function() {
         // Fetch provinces on page load
         fetch('{{ route("checkout.get_province") }}')
@@ -210,22 +157,6 @@
                 });
         });
 
-        document.getElementById('city').addEventListener('change', function() {
-            let cityId = this.value;
-            fetch(`/subdistricts/${cityId}`)
-                .then(response => response.json())
-                .then(subdistricts => {
-                    let subdistrictSelect = document.getElementById('subdistrict');
-                    subdistrictSelect.innerHTML = '<option value="">Select Subdistrict</option>';
-                    subdistricts.forEach(subdistrict => {
-                        let option = document.createElement('option');
-                        option.value = subdistrict.id;
-                        option.textContent = subdistrict.name;
-                        subdistrictSelect.appendChild(option);
-                    });
-                });
-        });
-
         // Calculate shipping cost
         document.getElementById('calculate-shipping-cost').onclick = function() {
             fetch('{{ route("checkout.shippingCost") }}', {
@@ -235,16 +166,101 @@
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 body: JSON.stringify({
-                    origin: document.getElementById('province').value, // Use province as origin
-                    destination: document.getElementById('province').value, // Use province as destination
-                    weight: 300, // Assuming a static weight for demonstration
-                    courier: document.getElementById('courier').value,
+                    origin: document.getElementById('province').value,
+                    destination: document.getElementById('city').value,
+                    weight: document.getElementById('weight').value,
+                    courier: document.getElementById('courier').value
                 })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.cost) {
-                    document.getElementById('shipping-cost').innerText = 'Shipping Cost: Rp. ' + data.cost[0].costs[0].cost[0].value;
+                    document.getElementById('shipping-cost-container').classList.remove('d-none');
+                    document.getElementById('shipping-cost').innerText = 'Rp. ' + new Intl.NumberFormat('id-ID').format(data.cost[0].costs[0].cost[0].value);
+                    let subtotal = parseInt(document.getElementById('subtotal').innerText.replace(/\D/g, ''));
+                    let shippingCost = data.cost[0].costs[0].cost[0].value;
+                    let total = subtotal + shippingCost;
+                    document.getElementById('total-amount').innerText = 'Rp. ' + new Intl.NumberFormat('id-ID').format(total);
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        };
+
+        document.getElementById('pay-now-button').onclick = function() {
+            fetch('{{ route("checkout") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    name: document.getElementById('name').value,
+                    phone: document.getElementById('phone').value,
+                    address: document.getElementById('address').value,
+                    province_id: document.getElementById('province').value,
+                    city_id: document.getElementById('city').value,
+                    subdistrict: document.getElementById('subdistrict').value,
+                    weight: document.getElementById('weight').value,
+                    courier: document.getElementById('courier').value
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.snap_token) {
+                    document.getElementById('snap_token').value = data.snap_token;
+                    document.getElementById('order_id').value = data.order_id;
+                   
+
+                    snap.pay(data.snap_token, {
+                        onSuccess: function(result) {
+                            document.getElementById('checkout-form').submit();
+                        },
+                        onPending: function(result) {
+                            document.getElementById('checkout-form').submit();
+                        },
+                        onError: function(result) {
+                            alert('Payment failed: ' + result.message);
+                        },
+                        onClose: function() {
+                            alert('You closed the payment popup without finishing the payment');
+                        }
+                    });
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('There was an error: ' + error.message);
+            });
+        };
+
+        document.getElementById('pay-later-button').onclick = function() {
+            fetch('{{ route("checkout.payLater") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    name: document.getElementById('name').value,
+                    phone: document.getElementById('phone').value,
+                    address: document.getElementById('address').value,
+                    province_id: document.getElementById('province').value,
+                    city_id: document.getElementById('city').value,
+                    subdistrict: document.getElementById('subdistrict').value,
+                    weight: document.getElementById('weight').value,
+                    courier: document.getElementById('courier').value
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = '{{ route("account") }}';
                 } else {
                     alert('Error: ' + data.error);
                 }

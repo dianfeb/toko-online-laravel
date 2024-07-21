@@ -13,8 +13,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Dipantry\Rajaongkir\Models\ROCity;
 use Dipantry\Rajaongkir\Models\ROProvince;
-use Dipantry\Rajaongkir\Models\ROSubDistrict;
 use Dipantry\Rajaongkir\Rajaongkir;
+use Illuminate\Support\Facades\Log;
 use Dipantry\Rajaongkir\Constants\RajaongkirCourier;
 
 class CheckoutController extends Controller
@@ -43,12 +43,7 @@ class CheckoutController extends Controller
         $cities = ROCity::where('province_id', $province_id)->get();
         return response()->json($cities);
     }
-
-    public function get_subdistrict($city_id)
-    {
-        $subdistricts = ROSubDistrict::where('city_id', $city_id)->get();
-        return response()->json($subdistricts);
-    }
+    
 
     public function showCheckoutForm()
     {
@@ -61,26 +56,20 @@ class CheckoutController extends Controller
         return view('home.checkout', compact('cart'));
     }
 
-   
     public function getShippingCost(Request $request)
     {
         $origin = $request->input('origin');
-    $destination = $request->input('destination');
-    $weight = $request->input('weight');
-    $courier = 'jne'; // Use courier code as a string
+        $destination = $request->input('destination');
+        $weight = $request->input('weight');
+        $courier = $request->input('courier');
 
-    try {
-        $cost = $this->rajaongkir->getOngkirCost(
-            $origin,
-            $destination,
-            $weight,
-            $courier
-        );
-
-        return response()->json(['cost' => $cost]);
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()], 500);
-    }
+        try {
+            $cost = $this->rajaongkir->getOngkirCost($origin, $destination, $weight, $courier);
+            return response()->json(['cost' => $cost]);
+        } catch (\Exception $e) {
+            Log::error('Error getting shipping cost: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to retrieve shipping cost.'], 500);
+        }
     }
 
     public function checkout(Request $request)
@@ -89,26 +78,53 @@ class CheckoutController extends Controller
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:13',
             'address' => 'required|string|max:255',
+            'province_id' => 'required',
+            'city_id' => 'required',
+            'subdistrict' => 'required|string|max:255',
+            'weight' => 'required',
+            'courier' => 'required|string',
         ]);
 
         $cart = Cart::with('cartItems.product')->where('user_id', Auth::id())->first();
 
         if (!$cart) {
-            return redirect()->route('home.cart')->with('error', 'Your cart is empty.');
+            Log::error('Cart is empty.');
+            return response()->json(['error' => 'Your cart is empty.'], 400);
         }
 
         $totalPrice = $cart->cartItems->sum(function ($cartItem) {
             return $cartItem->quantity * $cartItem->product->price;
         });
 
-        // Create the order and save order items before payment
+        try {
+            $cost = $this->rajaongkir->getOngkirCost(
+                $request->province_id,
+                $request->city_id,
+                $request->weight,
+                $request->courier
+            );
+
+        $shippingCost = $cost[0]['costs'][0]['cost'][0]['value'];
+        } catch (\Exception $e) {
+            Log::error('Error getting shipping cost: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to retrieve shipping cost.'], 500);
+        }
+
+        $totalPriceWithShipping = $totalPrice + $shippingCost;
+
         $order = new Order();
         $order->user_id = Auth::id();
         $order->name = $request->name;
         $order->phone = $request->phone;
         $order->address = $request->address;
-        $order->total = $totalPrice;
-        $order->status = 'pending'; // Set initial status to pending
+        $order->province_id = $request->province_id;
+        $order->city_id = $request->city_id;
+        $order->subdistrict = $request->subdistrict;
+        $order->courier = $request->courier;
+        $order->weight = $request->weight;
+        $order->shipping_cost = $shippingCost;
+        $order->total = $totalPriceWithShipping;
+        $order->status = 'pending';
         $order->save();
 
         foreach ($cart->cartItems as $cartItem) {
@@ -120,12 +136,11 @@ class CheckoutController extends Controller
             $orderItem->save();
         }
 
-        // Prepare Midtrans transaction
         $transactionDetails = [
-            'order_id' => $order->id, // Use order ID for tracking
-            'gross_amount' => $totalPrice,
+            'order_id' => $order->id,
+            'gross_amount' => $totalPriceWithShipping,
         ];
-
+    
         $itemDetails = $cart->cartItems->map(function ($cartItem) {
             return [
                 'id' => $cartItem->product_id,
@@ -134,87 +149,122 @@ class CheckoutController extends Controller
                 'name' => $cartItem->product->name,
             ];
         })->toArray();
-
+    
         $customerDetails = [
             'name' => Auth::user()->name,
             'email' => Auth::user()->email,
             'phone' => Auth::user()->phone,
         ];
-
+    
         $transaction = [
             'transaction_details' => $transactionDetails,
             'item_details' => $itemDetails,
             'customer_details' => $customerDetails,
         ];
-
+    
         try {
             $snapToken = Snap::getSnapToken($transaction);
-            return response()->json(['snap_token' => $snapToken, 'order_id' => $order->id]);
+            return response()->json(['snap_token' => $snapToken, 'order_id' => $order->id,]);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            Log::error('Error getting Snap token: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to get payment token.'], 500);
         }
     }
+
+
+    
 
     public function complete(Request $request)
     {
         $orderData = $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:15',
-            'address' => 'required|string|max:255',
             'snap_token' => 'required|string',
             'order_id' => 'required|integer',
         ]);
 
-        // Verify payment with Midtrans (without webhook)
-        $status = Transaction::status($orderData['snap_token']);
+        try {
+            $status = Transaction::status($orderData['snap_token']);
 
-        // Ensure that $status is an object and transaction_status exists
-        if (is_object($status) && isset($status->transaction_status) && ($status->transaction_status == 'capture' || $status->transaction_status == 'settlement')) {
-            $order = Order::find($orderData['order_id']);
-            if ($order) {
-                $order->status = 'paid';
-                $order->save();
+            if (is_object($status) && isset($status->transaction_status)) {
+                if ($status->transaction_status == 'capture' || $status->transaction_status == 'settlement') {
+                    $order = Order::find($orderData['order_id']);
+                    if ($order) {
+                        $order->status = 'paid';
+                        $order->save();
 
-                $cart = Cart::with('cartItems.product')->where('user_id', Auth::id())->first();
-                $cart->cartItems()->delete();
-                $cart->delete();
+                        $cart = Cart::with('cartItems.product')->where('user_id', Auth::id())->first();
+                        if ($cart) {
+                            $cart->cartItems()->delete();
+                            $cart->delete();
+                        }
 
-                return redirect()->route('home.index')->with('success', 'Your order has been placed successfully.');
+                        return redirect()->route('home.index')->with('success', 'Your order has been placed successfully.');
+                    } else {
+                        return redirect()->route('home.cart')->with('error', 'Order not found.');
+                    }
+                } else {
+                    return redirect()->route('home.cart')->with('error', 'Payment not completed.');
+                }
             } else {
-                return redirect()->route('home.cart')->with('error', 'Order not found.');
+                return redirect()->route('home.cart')->with('error', 'Payment status could not be determined.');
             }
-        } else {
-            return redirect()->route('home.cart')->with('error', 'Payment not completed.');
+        } catch (\Exception $e) {
+            Log::error('Error verifying payment status: ' . $e->getMessage());
+            return redirect()->route('home.cart')->with('error', 'Failed to verify payment status.');
         }
     }
 
     public function payLater(Request $request)
     {
         $request->validate([
-            'address' => 'required|string|max:255',
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:13',
             'address' => 'required|string|max:255',
+            'province_id' => 'required',
+            'city_id' => 'required',
+            'subdistrict' => 'required|string|max:255',
+            'weight' => 'required',
+            'courier' => 'required|string',
         ]);
 
         $cart = Cart::with('cartItems.product')->where('user_id', Auth::id())->first();
 
         if (!$cart) {
-            return response()->json(['error' => 'Your cart is empty.']);
+            return response()->json(['error' => 'Your cart is empty.'], 400);
         }
 
         $totalPrice = $cart->cartItems->sum(function ($cartItem) {
             return $cartItem->quantity * $cartItem->product->price;
         });
 
-        // Create the order and save order items without processing payment
+        try {
+            $cost = $this->rajaongkir->getOngkirCost(
+                $request->province_id,
+                $request->city_id,
+                $request->weight,
+                $request->courier
+            );
+
+            $shippingCost = $cost[0]['costs'][0]['cost'][0]['value'];
+        } catch (\Exception $e) {
+            Log::error('Error getting shipping cost: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to retrieve shipping cost.'], 500);
+        }
+
+        $totalPriceWithShipping = $totalPrice + $shippingCost;
+
         $order = new Order();
         $order->user_id = Auth::id();
         $order->name = $request->name;
         $order->phone = $request->phone;
         $order->address = $request->address;
-        $order->total = $totalPrice;
-        $order->status = 'pending'; // Set initial status to pending
+        $order->province_id = $request->province_id;
+        $order->city_id = $request->city_id;
+        $order->subdistrict = $request->subdistrict;
+        $order->courier = $request->courier;
+        $order->weight = $request->weight;
+        $order->shipping_cost = $shippingCost;
+        $order->total = $totalPriceWithShipping;
+        $order->status = 'pending';
         $order->save();
 
         foreach ($cart->cartItems as $cartItem) {
@@ -226,10 +276,6 @@ class CheckoutController extends Controller
             $orderItem->save();
         }
 
-        // Clear the cart after creating the order
-        $cart->cartItems()->delete();
-        $cart->delete();
-
-        return response()->json(['success' => true]);
+        return response()->json(['success' => 'Order placed successfully.']);
     }
 }

@@ -79,10 +79,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/provinces', [CheckoutController::class, 'get_province'])->name('checkout.get_province');
     Route::get('/cities/{province_id}', [CheckoutController::class, 'get_city'])->name('checkout.get_city');
-    Route::get('/subdistricts/{city_id}', [CheckoutController::class, 'get_subdistrict'])->name('checkout.get_subdistrict');
     Route::post('/checkout/shipping-cost', [CheckoutController::class, 'getShippingCost'])->name('checkout.shippingCost');
-    
+    Route::get('/api/couriers', [CheckoutController::class, 'getCouriers']);
 
+    
 
     Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
     Route::post('/wishlist/add/{productId}', [WishlistController::class, 'add'])->name('wishlist.add');
