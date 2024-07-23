@@ -144,33 +144,8 @@
     <footer class="pt-13 pb-4 footer bg-color-2">
         <div class="container container-xxl">
             <div class="row">
-                <div class="col-md-6 col-lg-3 mb-6 mb-lg-0">
-                    <h3 class="fs-14 mb-3 text-uppercase letter-spacing-05">menu</h3>
-                    <ul class="list-unstyled mb-0">
-                        <li class="py-0"><a href="#"
-                                class="text-gray hover-primary lh-2 font-weight-500">Seatting</a> </li>
-                        <li class="py-0"><a href="#"
-                                class="text-gray hover-primary lh-2 font-weight-500">Tables</a> </li>
-                        <li class="py-0"><a href="#"
-                                class="text-gray hover-primary lh-2 font-weight-500">Decoration</a> </li>
-                        <li class="py-0"><a href="#"
-                                class="text-gray hover-primary lh-2 font-weight-500">Gift Ideas</a> </li>
-                    </ul>
-                </div>
-                <div class="col-md-6 col-lg-3 mb-6 mb-lg-0">
-                    <h3 class="fs-14 mb-3 text-uppercase letter-spacing-05">about</h3>
-                    <ul class="list-unstyled mb-0">
-                        <li class="py-0"><a href="#"
-                                class="text-gray hover-primary lh-2 font-weight-500">Contact Us</a> </li>
-                        <li class="py-0"><a href="#"
-                                class="text-gray hover-primary lh-2 font-weight-500">Contributiors</a> </li>
-                        <li class="py-0"><a href="#"
-                                class="text-gray hover-primary lh-2 font-weight-500">Privacy</a> </li>
-                        <li class="py-0"><a href="#"
-                                class="text-gray hover-primary lh-2 font-weight-500">Sponsors</a> </li>
-                    </ul>
-                </div>
-                <div class="col-md-6 col-lg-3 mb-6 mb-lg-0">
+               
+                <div class="col-md-6 col-lg-6 mb-6 mb-lg-0">
                     <h3 class="fs-14 mb-3 text-uppercase letter-spacing-05">follow us</h3>
                     <ul class="list-unstyled mb-0">
                         <li class="py-0"><a href="#"
@@ -183,7 +158,7 @@
                                 class="text-gray hover-primary lh-2 font-weight-500">Twitter</a> </li>
                     </ul>
                 </div>
-                <div class="col-md-6 col-lg-3 mb-6 mb-lg-0">
+                <div class="col-md-6 col-lg-6 mb-6 mb-lg-0">
                     <h3 class="fs-14 mb-3 text-uppercase letter-spacing-05">newsletter</h3>
                     <form>
                         <div class="input-group position-relative">
@@ -197,6 +172,12 @@
                             </div>
                         </div>
                     </form>
+                    <h3 class="fs-14 mt-2 text-uppercase letter-spacing-05">Contact Us</h3>
+                    <ul class="list-unstyled mb-0">
+                        <li class="py-0"><a href="#"
+                                class="text-gray hover-primary lh-2 font-weight-500">Whatsapp</a> </li>
+                        
+                    </ul>
                 </div>
             </div>
             <div class="mt-2 mt-md-7 row align-items-center">

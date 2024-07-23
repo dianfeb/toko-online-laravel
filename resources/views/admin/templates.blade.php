@@ -21,7 +21,9 @@
     <link rel="icon" type="image/png" sizes="192x192" href="assets/media/favicons/favicon-192x192.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="assets/media/favicons/apple-touch-icon-180x180.png" />
     <link rel="stylesheet" id="css-main" href="{{ asset('admins/assets/css/oneui.min-5.9.css') }}" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
 </head>
@@ -29,7 +31,7 @@
 <body>
     <div id="page-container"
         class="sidebar-o sidebar-dark enable-page-overlay side-scroll page-header-fixed main-content-boxed">
-       
+
         <nav id="sidebar" aria-label="Main Navigation">
             <div class="content-header">
                 <a class="fw-semibold text-dual" href="index.html">
@@ -43,14 +45,14 @@
                         data-action="dark_mode_toggle">
                         <i class="far fa-moon"></i>
                     </button>
-                    
+
                     <a class="d-lg-none btn btn-sm btn-alt-secondary ms-1" data-toggle="layout"
                         data-action="sidebar_close" href="javascript:void(0)">
                         <i class="fa fa-fw fa-times"></i>
                     </a>
                 </div>
             </div>
-            
+
             <div class="js-sidebar-scroll">
                 <div class="content-side">
                     <ul class="nav-main">
@@ -60,7 +62,7 @@
                                 <span class="nav-main-link-name">Dashboard</span>
                             </a>
                         </li>
-                       
+
                         <li class="nav-main-heading">User Interface</li>
                         <li class="nav-main-item open">
                             <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true"
@@ -70,7 +72,7 @@
                             </a>
                             <ul class="nav-main-submenu">
                                 <li class="nav-main-item open">
-                                   
+
                                     <ul class="nav-main-submenu">
                                         <li class="nav-main-item">
                                             <a class="nav-main-link active" href="/admin/category">
@@ -82,32 +84,40 @@
                                                 <span class="nav-main-link-name">Product</span>
                                             </a>
                                         </li>
-                                        <li class="nav-main-item">
-                                            <a class="nav-main-link" href="/admin/cart">
-                                                <span class="nav-main-link-name">Cart</span>
-                                            </a>
-                                        </li>
+
                                         <li class="nav-main-item">
                                             <a class="nav-main-link" href="/admin/order">
                                                 <span class="nav-main-link-name">Order</span>
                                             </a>
                                         </li>
-                                        <li class="nav-main-item">
-                                            <a class="nav-main-link" href="be_pages_ecom_product_edit.html">
-                                                <span class="nav-main-link-name">Product Edit</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-main-item">
-                                            <a class="nav-main-link" href="be_pages_ecom_customer.html">
-                                                <span class="nav-main-link-name">zot</span>
-                                            </a>
-                                        </li>
+
+                                    
                                     </ul>
                                 </li>
-                               
+
                             </ul>
                         </li>
-                        
+                        <li class="nav-main-item">
+                            <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true"
+                                aria-expanded="false" href="#">
+                                <i class="nav-main-link-icon si si-wrench"></i>
+                                <span class="nav-main-link-name">Components</span>
+                            </a>
+                            <ul class="nav-main-submenu">
+                                <li class="nav-main-item">
+                                    <a class="nav-main-link" href="/admin/config">
+                                        <span class="nav-main-link-name">Config</span>
+                                    </a>
+                                </li>
+                                <li class="nav-main-item">
+                                    <a class="nav-main-link" href="/admin/slider">
+                                        <span class="nav-main-link-name">Sliders</span>
+                                    </a>
+                                </li>
+                              
+                            </ul>
+                        </li>
+
                     </ul>
                 </div>
             </div>
@@ -138,8 +148,8 @@
                         <button type="button" class="btn btn-sm btn-alt-secondary d-flex align-items-center"
                             id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
                             aria-expanded="false">
-                            <img class="rounded-circle" src="{{ asset('admins/assets/images/avatar11.jpg') }}" alt="Header Avatar"
-                                style="width: 21px" />
+                            <img class="rounded-circle" src="{{ asset('admins/assets/images/avatar11.jpg') }}"
+                                alt="Header Avatar" style="width: 21px" />
                             <span class="d-none d-sm-inline-block ms-2">admin</span>
                             <i class="fa fa-fw fa-angle-down d-none d-sm-inline-block opacity-50 ms-1 mt-1"></i>
                         </button>
@@ -152,29 +162,32 @@
                                 <p class="mb-0 text-muted fs-sm fw-medium">Admin Toko Online</p>
                             </div>
                             <div class="p-2">
-                               
+
                                 <a class="dropdown-item d-flex align-items-center justify-content-between"
                                     href="{{ route('admin.profile.edit') }}">
                                     <span class="fs-sm fw-medium">Settings</span>
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center justify-content-between"
-                                href="op_auth_lock.html">
-                                <span class="fs-sm fw-medium">Lock Account</span>
-                            </a>
-                            
-                           
-                            <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" class="d-none">
-                                @csrf
-                            </form>
-                            <a class="dropdown-item d-flex align-items-center justify-content-between" href="{{ route('admin.logout') }}"
-                                onclick="event.preventDefault();
-                            document.getElementById('logout-form').submit();">  <span class="fs-sm fw-medium">Log Out</span> </a>
+                                    href="op_auth_lock.html">
+                                    <span class="fs-sm fw-medium">Lock Account</span>
+                                </a>
+
+
+                                <form id="logout-form" action="{{ route('admin.logout') }}" method="POST"
+                                    class="d-none">
+                                    @csrf
+                                </form>
+                                <a class="dropdown-item d-flex align-items-center justify-content-between"
+                                    href="{{ route('admin.logout') }}"
+                                    onclick="event.preventDefault();
+                            document.getElementById('logout-form').submit();">
+                                    <span class="fs-sm fw-medium">Log Out</span> </a>
                             </div>
-                           
+
                         </div>
                     </div>
-                   
-                    
+
+
                 </div>
             </div>
             <div id="page-header-search" class="overlay-header bg-body-extra-light">
@@ -210,7 +223,8 @@
                         <a class="fw-semibold" href="https://pixelcave.com" target="_blank">pixelcave</a>
                     </div>
                     <div class="col-sm-6 order-sm-1 py-1 text-center text-sm-start">
-                        <a class="fw-semibold" href="https://pixelcave.com/products/oneui" target="_blank">OneUI 5.9</a>
+                        <a class="fw-semibold" href="https://pixelcave.com/products/oneui" target="_blank">OneUI
+                            5.9</a>
                         &copy; <span data-toggle="year-copy"></span>
                     </div>
                 </div>
@@ -220,6 +234,8 @@
     <script src="{{ asset('admins/assets/js/oneui.app.min-5.9.js') }}"></script>
     <script src="{{ asset('admins/assets/js/chart.umd.js') }}"></script>
     <script src="{{ asset('admins/assets/js/be_pages_ecom_dashboard.min.js') }}"></script>
+   @stack('js')
+</body>
 
 </body>
 

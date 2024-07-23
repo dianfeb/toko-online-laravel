@@ -1,36 +1,30 @@
 @extends('home.templates.header')
 @section('title', 'Toko Online Laravel | Home')
 @section('content')
-    <section class="overflow-hidden">
-        <div class="slick-slider custom-slider-02"
-            data-slick-options="{&quot;slidesToShow&quot;: 1,&quot;infinite&quot;:true,&quot;autoplay&quot;:false,&quot;dots&quot;:true,&quot;arrows&quot;:false}">
+<section class="overflow-hidden">
+    <div class="slick-slider custom-slider-02"
+        data-slick-options='{"slidesToShow": 1, "infinite": true, "autoplay": false, "dots": true, "arrows": false}'>
+        @foreach ($sliders as $slider)
             <div class="box">
                 <div class="d-flex flex-column bg-img-cover-center vh-100 pt-xxl-13 custom-height-sm"
-                    style="background-image: url('assets/images/bg-home-03.jpg')">
+                    style="background-image: url('{{ url('storage/slider/' . $slider->img) }}')">
                     <div
                         class="d-flex flex-column h-100 align-items-center justify-content-center justify-content-xxl-start pt-xxl-13">
                         <div class="container container-xxl">
-                            <h1 class="mb-6 fs-40 fs-xxl-90 lh-1 text-center" data-animate="fadeInUp">Welcome To Toko Online
-                                Laravel</h1>
+                            <h1 class="mb-6 fs-40 fs-xxl-90 lh-1 text-center" data-animate="fadeInUp">{{ $slider->desc }}</h1>
                             <div class="text-center">
-                                <a href="shop-page-02.html" class="btn btn-outline-primary text-uppercase letter-spacing-05"
-                                    data-animate="fadeInUp">Shop Now</a>
+                                <a href="#shop-now" class="btn btn-outline-primary text-uppercase letter-spacing-05" data-animate="fadeInUp">Shop Now</a>
                             </div>
                         </div>
                     </div>
-                    <div class="mt-auto">
-                        <div class="container container-xxl">
-                            <p class="text-primary mb-8">Designed by <span class="font-weight-600">Nicholas
-                                    Karlovasitis & Sarah Gibson</span></p>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
-
-        </div>
-    </section>
-    <section class="py-lg-15 py-11">
-        <h2 class="text-center fs-30 fs-md-40 mb-8">Featured Items</h2>
+        @endforeach
+    </div>
+</section>
+    <section class="py-lg-15 py-11" id="shop-now">
+        <h2 class="text-center fs-30 fs-md-40 mb-8">Our Product</h2>
         <div class="container container-xxl">
             <div class="d-grid g-1 g-sm-2 g-lg-4 grid-gap overflow-hidden">
                 @foreach ($products as $item)

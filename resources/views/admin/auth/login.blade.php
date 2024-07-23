@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
     <link href="images/favicon.png" rel="icon" />
-    <title>Oxyy - Login and Register Form Html Template</title>
+    <title>Toko Online Laravel | Login</title>
     <meta name="description" content="Login and Register Form Html Template">
     <meta name="author" content="harnishdesign.net">
 

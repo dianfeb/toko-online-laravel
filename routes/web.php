@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CartController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\ConfigController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Front\AccountController;
 use App\Http\Controllers\Admin\CategoryController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\Front\CheckoutController;
 use App\Http\Controllers\Front\WishlistController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\AdminLoginController;
+use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Front\CartController as FrontCartController;
 use App\Http\Controllers\Front\HomeController as FrontHomeController;
 
@@ -29,8 +31,6 @@ use App\Http\Controllers\Front\HomeController as FrontHomeController;
 */
 
 
-Route::get('/', [FrontHomeController::class, 'index'])->name('home.index');
-Route::get('/detail/{slug}', [FrontHomeController::class, 'detailProduct'])->name('detail.product');
 
 Route::get('/test-rajaongkir', function () {
     $apiKey = config('rajaongkir.api_key');
@@ -40,12 +40,17 @@ Route::get('/test-rajaongkir', function () {
     dd($apiKey, $package, $timeout);
 });
 
+
+Route::get('/', [FrontHomeController::class, 'index'])->name('home.index');
+Route::get('/detail/{slug}', [FrontHomeController::class, 'detailProduct'])->name('detail.product');
+Route::get('/category/{slug}', [FrontHomeController::class, 'category'])->name('category');
+
 Auth::routes();
 
 // Admin Authentication Routes
 Route::prefix('admin')->group(function () {
     Route::get('login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
-    Route::post('login', [AdminLoginController::class, 'login']);
+    Route::post('login', [AdminLoginController::class, 'login'])->name('adm.lgn');
     Route::post('logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
 
     Route::middleware('auth.admin')->group(function () {
@@ -57,6 +62,9 @@ Route::prefix('admin')->group(function () {
         Route::resource('/category', CategoryController::class);
         Route::resource('/product', ProductController::class);
         Route::resource('/order', OrderController::class);
+        Route::resource('/config', ConfigController::class);
+        Route::resource('/slider', SliderController::class);
+
        
     });
 });
@@ -82,12 +90,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/checkout/shipping-cost', [CheckoutController::class, 'getShippingCost'])->name('checkout.shippingCost');
     Route::get('/api/couriers', [CheckoutController::class, 'getCouriers']);
 
-    
-
     Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
     Route::post('/wishlist/add/{productId}', [WishlistController::class, 'add'])->name('wishlist.add');
     Route::post('/wishlist/remove/{itemId}', [WishlistController::class, 'remove'])->name('wishlist.remove');
-
 
 });
 
